@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.ward.savefood.admin.dao.FoodDao">
+ 
+	<insert id="insertFood" useGeneratedKeys="true" keyProperty="foodSeq">
+		INSERT INTO
+			food (food_name, food_expi_date, category_seq,  insert_date)
+		VALUES
+			(#{foodName}, #{expiDate}, #{categorySeq}, now());
+	</insert>
+	
+	<update id="updateFoodImg" parameterType="java.util.HashMap">
+		UPDATE
+			food
+		SET
+			food_img = #{foodImg},
+			modify_date = now()
+		WHERE
+			food_seq = #{foodSeq};
+	</update>
+	
+	<select id="selectInsertInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			a.food_name,
+			b.category_name
+		FROM food a
+		LEFT JOIN category b ON a.category_seq = b.category_seq
+		WHERE
+			food_name REGEXP #{searchText}
+			AND a.is_delete = 'N';
+	</select>
+	
+	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			a.food_seq,
+			a.food_name,
+            a.food_expi_date,
+            a.food_img,
+            a.category_seq,
+            b.category_name
+		FROM food a
+		LEFT JOIN category b ON a.category_seq = b.category_seq
+		WHERE
+			a.category_seq = #{categorySeq}
+			AND a.is_delete = 'N'
+		ORDER BY food_name;
+	</select>
+</mapper>

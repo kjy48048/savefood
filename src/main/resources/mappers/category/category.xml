@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.ward.savefood.admin.dao.CategoryDao">
+ 
+	<insert id="insertCategory" useGeneratedKeys="true" keyProperty="categorySeq">
+		INSERT INTO
+			category (category_name, insert_date, ord)
+		SELECT
+			#{categoryName}, now(), MAX(ord)+1
+		FROM category
+		WHERE is_delete = 'N';
+	</insert>
+	
+	<select id="selectInsertInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			category_name
+		FROM
+			category
+		WHERE
+			category_name REGEXP #{searchText}
+			AND is_delete = 'N';
+	</select>
+	 
+	<update id="updateCategory" parameterType="java.util.HashMap">
+		UPDATE
+			category
+		SET
+			category_name = #{categoryName},
+			modify_date = now()
+		WHERE
+			category_seq = #{categorySeq};
+	</update>
+	
+	<update id="deleteCategory" parameterType="java.util.HashMap">
+		UPDATE
+			category
+		SET
+			is_delete = 'Y',
+			modify_date = now()
+		WHERE
+			category_seq = #{categorySeq};
+	</update>
+	
+	<select id="getCategoryList" resultType="java.util.HashMap">
+	SELECT
+			a.category_seq,
+			a.category_name,
+            (SELECT COUNT(*) 
+             FROM savefood.food 
+             WHERE category_seq = a.category_seq) food_count,
+			a.ord
+		FROM
+			savefood.category a
+		WHERE
+			is_delete = 'N'
+		ORDER BY ord;
+	</select>
+</mapper>

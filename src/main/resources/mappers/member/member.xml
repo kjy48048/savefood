@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.ward.savefood.member.dao.MemberDao">
+ 
+	<select id="selectJoinInfo" parameterType="java.util.HashMap" resultType="String">
+		SELECT
+			telegram.chat_id
+		FROM
+			member_auth as auth
+		INNER JOIN
+			member_telegram as telegram ON auth.member_id = telegram.member_id
+		WHERE
+			auth.member_id = #{memberId}
+			AND auth.is_auth = 'Y'
+			AND telegram.is_delete = 'N'
+	</select>
+	
+	<insert id="joinUser" useGeneratedKeys="true" keyProperty="memberSeq">
+		INSERT INTO
+			member (member_id, insert_date)
+		VALUES 
+			(#{memberId}, now());
+	</insert>
+	
+	<insert id="creatPassword" parameterType="java.util.HashMap">
+		INSERT INTO
+			member_password (member_seq, member_password, insert_date)
+		VALUES 
+			(#{memberSeq}, #{password}, now());
+	</insert>
+	
+	<insert id="insertAuth" parameterType="java.util.HashMap">
+		INSERT INTO
+			member_auth (member_id, member_auth_key, insert_date)
+		VALUES 
+			(#{memberId}, #{authKey}, now());
+	</insert>
+	
+	<insert id="insertTelegram" parameterType="java.util.HashMap">
+		INSERT INTO
+			member_telegram (member_id, chat_id, insert_date)
+		VALUES 
+			(#{memberId}, #{chatId}, now());
+	</insert>
+	
+	<select id="getAuthKey" parameterType="String" resultType="String">
+		SELECT
+			member_auth_key
+		FROM
+			member_auth
+		WHERE
+			member_id = #{memberId}
+			AND is_auth = 'N'
+	</select>
+	
+	<update id="updateAuth" parameterType="java.util.HashMap">
+		UPDATE
+			member_auth
+		SET
+			is_auth = 'Y'
+		WHERE
+			member_id = #{memberId}
+			AND member_auth_key = #{authKey}
+	</update>
+	
+	<select id="loginUser" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			member.member_id,
+			password.member_password
+		FROM
+			member as member
+		INNER JOIN
+			member_password as password ON member.member_seq = password.member_seq
+		WHERE
+			member.member_id = #{memberId}
+			AND member.member_status = '1'
+	</select>
+</mapper>

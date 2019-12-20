@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    <!-- MySQL dataSource -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://savefood.clgwx6cfhekr.ap-northeast-2.rds.amazonaws.com:3306/savefood?allowMultiQueries=true"/>
+        <property name="username" value="savefood_master"/>
+        <property name="password" value="savefood20190922!!"/>
+    </bean>
+    
+    <!-- MyBatis -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="mapperLocations" value="classpath:/mappers/**/*.xml"></property>
+    </bean>
+    
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+    	<constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ward.savefood.**.dao" />
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+</beans>
