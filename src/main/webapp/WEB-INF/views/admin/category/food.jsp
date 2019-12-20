@@ -67,16 +67,20 @@
 								<c:forEach items="${foodList}" var="food" varStatus="list"> 
 								<tr>
 									<td style="text-align:center; vertical-align:middle;">
-										<input type="checkbox" class="foodSeq" value="${food.food_seq}">
+										<input type="checkbox" value="${food.food_seq}">
 									</td>
-									<td style="text-align:center; vertical-align:middle; width: 100px; height:100px; overflow:hidden;"><img style="width: 100px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}"></td>
+									<td style="text-align:center; vertical-align:middle; width: 100px; height:100px; overflow:hidden;">
+										<img style="width: 70px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}">
+										<input type="file" id="updateImg${food.food_seq}" style="display: none;">
+										<input type="button" onclick="document.getElementById('updateImg${food.food_seq}').click();" value="수정" style="display: none;">
+									</td>
 									<td style="vertical-align:middle;">
-										<input type="text" class="form-control foodName" style="border:0px; background:#ffffff" value="${food.food_name}" disabled>
+										<input type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_name}" disabled>
 									</td>
 									<td style="text-align:center; vertical-align:middle;">
-										<input type="text" class="form-control foodExpiDate" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
+										<input type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
 									</td>
-									<td style="text-align:center;">
+									<td style="text-align:center; vertical-align:middle;">
 										<input type="button" class="btn btn-primary updateBtn" value="수정">
 									</td>
 								</tr>
@@ -288,11 +292,98 @@
 				}
 			});
 		}
-		
+
+		/* 유통기한 입력 제한 */
 		function numberMaxLength(e){
 	        if(e.value.length > e.maxLength){
 	            e.value = e.value.slice(0, e.maxLength);
 	        }
+		}
+		/* onclick="onclick=document.all.file.click()" */
+		/* 수정 */
+		$('.updateBtn').click(function(){
+			var dataParam = {
+					"foodSeq":$(this).parent().parent().children(":first-child").children().val(),
+					"foodName":$(this).parent().parent().children(":nth-child(3)").children().val(),
+					"foodExpiDate":$(this).parent().parent().children(":nth-child(4)").children().val()
+			}
+			var btn = $(this);
+			var inputFoodName = $(this).parent().parent().children(":nth-child(3)").children();
+			var inputExpiDate = $(this).parent().parent().children(":nth-child(4)").children();
+			var updateImg = $(this).parent().parent().children(":nth-child(2)").children(":last-child");
+			
+			if (btn.val() == "수정") {
+				inputFoodName.removeAttr("disabled");
+				inputFoodName.attr("style", "border:1px solid #000000; background:#ffffff");
+				inputExpiDate.removeAttr("disabled");
+				inputExpiDate.attr("style", "border:1px solid #000000; background:#ffffff");
+				updateImg.removeAttr("style");
+				
+				var len = inputFoodName.val().length;
+				inputFoodName[0].focus();
+				inputFoodName[0].setSelectionRange(len, len);
+				
+				btn.attr("value", "저장");
+
+			}else {
+ 				 $.ajax({
+					url:'/api/admin/food/update',
+					type:'post',
+					dataType:'text',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					success:function(data){
+						alert("수정되었습니다.");
+					},error:function(data){
+						alert(data.responseText);
+					}
+				}); 
+				
+ 				inputFoodName.attr("disabled", "disabled");
+ 				inputFoodName.attr("style", "border:0px; background:#ffffff");
+ 				inputExpiDate.attr("disabled", "disabled");
+ 				inputExpiDate.attr("style", "border:0px; background:#ffffff");
+ 				updateImg.attr("style", "display: none;");
+				
+				btn.attr("value", "수정");
+			}
+		});
+
+		/* 삭제 */
+		function foodDelete() {
+			/* 체크된 것들 가져와야함 */
+			var dataParam = new Array();
+			var checkedFood = $(".foodSeq:checked");
+
+			if(checkedFood.length == 0){
+				alert("삭제할 식품을 선택해주세요.");
+				return;
+			}
+			
+			var str = "";
+			
+			for(var i = 0; i < checkedFood.length; i++){
+				var foodSeq = {"foodSeq":checkedFood.get(i).value};
+				str += checkedFood.get(i).parentElement.parentElement.firstElementChild.nextElementSibling.nextElementSibling.firstElementChild.value + "\n";
+				dataParam.push(foodSeq);				
+				}
+			if(confirm("삭제하시겠습니까? \n" + str)){
+				 $.ajax({
+					url:'/api/admin/food/delete',
+					type:'post',
+					dataType:'text',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					success:function(data){
+						alert("삭제되었습니다.");
+						location.href = "/view/admin/category";
+					},error:function(data){
+						alert(data.responseText);
+					}
+				}); 
+			}else{
+				return;
+			}	
 		}
 	</script>
 </body>

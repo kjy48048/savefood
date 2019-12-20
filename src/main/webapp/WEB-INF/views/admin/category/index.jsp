@@ -67,17 +67,17 @@
 						<c:forEach items="${categoryList}" var="category" varStatus="list"> 
 						<tr>
 							<td style="text-align:center; vertical-align:middle;">
-								<input type="checkbox" class="categorySeq" value="${category.category_seq}">
+								<input type="checkbox" value="${category.category_seq}">
 							</td>
 							<td style="text-align:center; vertical-align:middle;">${category.ord}</td>
 							<td style="vertical-align:middle;">
-								<input type="text" class="form-control categoryName" style="border:0px; background:#ffffff" value="${category.category_name}" disabled>
+								<input type="text" class="form-control" style="border:0px; background:#ffffff" value="${category.category_name}" disabled>
 								<%-- <a href="/view/admin/category/food">${category.category_name}</a> --%>
 							</td>
 							<td style="text-align:center; vertical-align:middle;">
 								<a href="/view/admin/category/food?category=${category.category_seq}">${category.food_count}</a>
 							</td><%-- ?category=${category.category_seq} --%>
-							<td style="text-align:center;">
+							<td style="text-align:center; vertical-align:middle;">
 								<input type="button" class="btn btn-primary updateBtn" value="수정">
 							</td>
 						</tr>
@@ -255,7 +255,7 @@
 				
 				btn.attr("value", "수정");
 			}
-			});
+		});
 			
 
 		/* 삭제 */
