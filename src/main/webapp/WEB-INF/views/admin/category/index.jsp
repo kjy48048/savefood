@@ -67,7 +67,7 @@
 						<c:forEach items="${categoryList}" var="category" varStatus="list"> 
 						<tr>
 							<td style="text-align:center; vertical-align:middle;">
-								<input type="checkbox" value="${category.category_seq}">
+								<input type="checkbox" value="${category.category_seq}" class="categorySeq">
 							</td>
 							<td style="text-align:center; vertical-align:middle;">${category.ord}</td>
 							<td style="vertical-align:middle;">

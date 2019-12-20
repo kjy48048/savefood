@@ -44,7 +44,7 @@ public class FoodService {
 			int expiDate = insertFoodRequest.getFoodExpiDate();
 			int categorySeq = insertFoodRequest.getCategorySeq();
 			
-			if(StringUtils.isEmpty(foodName) || expiDate == 0 || categorySeq == 0) {
+			if(StringUtils.isEmpty(foodName) || (expiDate == 0 || expiDate > 999) || categorySeq == 0) {
 				return new ResponseEntity<>("input food info", HttpStatus.NO_CONTENT);
 			}
 			
@@ -67,28 +67,32 @@ public class FoodService {
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to regist food", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	public ResponseEntity<?> updateFood(UpdateFoodRequest updateFoodRequest) {
 		TransactionStatus status = transactionManager.getTransaction(def);
 		
-		try {			
+		try {		
+			int foodSeq = updateFoodRequest.getFoodSeq();
 			String foodName = updateFoodRequest.getFoodName();
 			int expiDate = updateFoodRequest.getFoodExpiDate();
 			String foodImg = updateFoodRequest.getFoodImg();
 			
-			if(StringUtils.isEmpty(foodName) || expiDate == 0 || StringUtils.isEmpty(foodImg)) {
+			if(foodSeq == 0 || StringUtils.isEmpty(foodName) || (expiDate == 0 || expiDate > 999)) {
 				return new ResponseEntity<>("input food info", HttpStatus.NO_CONTENT);
 			}
 			
 			Map<String, Object> updateFood = new HashMap<String, Object>();
+			updateFood.put("foodSeq", foodSeq);
 			updateFood.put("foodName", foodName);
-			updateFood.put("expiDate", expiDate);
+			updateFood.put("foodExpiDate", expiDate);
 			updateFood.put("foodImg", foodImg);
 			int updateResult = foodDao.updateFood(updateFood);
 			
 			if(updateResult > 0) {
 				transactionManager.commit(status);
-				return new ResponseEntity<>("update complete", HttpStatus.OK);
+				Map<String, Object> food = new HashMap<String, Object>();
+				food.put("food_seq", updateFood.get("foodSeq"));
+				return new ResponseEntity<>(food, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,6 +100,34 @@ public class FoodService {
 		
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to update food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	public ResponseEntity<?> deleteFood(List<UpdateFoodRequest> updateFoodRequest) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {			
+			
+			if(updateFoodRequest.size() == 0) {
+				return new ResponseEntity<>("no food info", HttpStatus.NO_CONTENT);
+			}
+			int updateResult = 0;
+			
+			for(int i = 0; i < updateFoodRequest.size(); i++) {
+				Map<String, Object> updateFood = new HashMap<String, Object>();
+				updateFood.put("foodSeq", updateFoodRequest.get(i).getFoodSeq());
+				updateResult += foodDao.deleteFood(updateFood);				
+			}
+	
+			if(updateResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>(updateResult + "delete complete", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to delete food", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public ResponseEntity<?> updateFoodImg(String foodSeq, MultipartFile mf) {

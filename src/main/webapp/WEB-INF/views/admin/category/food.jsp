@@ -67,18 +67,25 @@
 								<c:forEach items="${foodList}" var="food" varStatus="list"> 
 								<tr>
 									<td style="text-align:center; vertical-align:middle;">
-										<input type="checkbox" value="${food.food_seq}">
+										<input type="checkbox" value="${food.food_seq}" class="foodSeq">
 									</td>
 									<td style="text-align:center; vertical-align:middle; width: 100px; height:100px; overflow:hidden;">
-										<img style="width: 70px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}">
-										<input type="file" id="updateImg${food.food_seq}" style="display: none;">
-										<input type="button" onclick="document.getElementById('updateImg${food.food_seq}').click();" value="수정" style="display: none;">
+									<c:choose>
+										<c:when test="${empty food.food_img}">
+											<img id="previewImg${food.food_seq}" style="width: 70px; height:auto;" src="${pageContext.request.contextPath}/resources/img/no-img.png">
+										</c:when>
+										<c:otherwise>
+											<img id="previewImg${food.food_seq}" style="width: 70px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}">
+										</c:otherwise>
+									</c:choose>
+										<input type="file" id="updateImg${food.food_seq}" style="display: none;" onchange="preview(false, document.getElementById('updateImg${food.food_seq}'), document.getElementById('previewImg${food.food_seq}'))">
+										<input type="button" id="updateButton${food.food_seq}" onclick="document.getElementById('updateImg${food.food_seq}').click();" value="수정" style="display: none;">
 									</td>
 									<td style="vertical-align:middle;">
-										<input type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_name}" disabled>
+										<input id="foodName${food.food_seq }" type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_name}" disabled>
 									</td>
 									<td style="text-align:center; vertical-align:middle;">
-										<input type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
+										<input id="foodExpiDate${food.food_seq }" type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
 									</td>
 									<td style="text-align:center; vertical-align:middle;">
 										<input type="button" class="btn btn-primary updateBtn" value="수정">
@@ -112,8 +119,9 @@
 				<div class="modal-header" >
 					<h5 class="modal-title" id="exampleModalLabel">식품 추가</h5>
 				</div>
-				<div class="modal-body-flex-row"><div style="min-width: 80px;  margin: auto 0;">이미지 :</div>
-					<input type="file" id="inputImg">
+				<div class="modal-body-flex-row" style="overflow: hidden;"><div style="min-width: 80px;  margin: auto 0;">이미지 :</div>
+					<img id="previewImg" src="${pageContext.request.contextPath}/resources/img/add-img.png" style="width:70px; height: auto; border: 1px solid grey" onclick="addImg()">
+					<input type="file" id="inputImg" style="width:0px; height:0px;" onchange="preview(true)">
 				</div>
 				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">식품명 :</div>
 					<input type="text" id="inputFoodName" class="form-control" placeholder="식품명" required="required">
@@ -236,6 +244,17 @@
 			var categorySeq = "${categorySeq}";
 			var foodImg  = $("#inputImg")[0].files[0];
 
+			if(!foodName) {
+				alert("식품명을 입력해주세요.");
+				$("#inputFoodName").focus();
+				return;
+			}
+			if(!expiDate) {
+				alert("유통기한을 입력해주세요.");
+				$("#inputExpiDate").focus();
+				return;
+			}
+			
 			var dataParam = {
 					"foodName":foodName,
 					"foodExpiDate":expiDate,
@@ -254,9 +273,8 @@
 						location.reload();
 						}
 					else{
-						regImg(data, foodImg);
+						regImg(data, foodImg, foodName);
 						}
-					
 				},error:function(data){
 					alert(data.responseText);
 				}
@@ -264,10 +282,8 @@
 		}
 		
 		/*이미지 등록 */
-		function regImg(data, foodImg) {
-			var foodName = $("#inputFoodName").val();
+		function regImg(data, foodImg, foodName) {
 			var foodSeq  = data.food_seq;
-			var foodImg  = $("#inputImg")[0].files[0];
 			var formData = new FormData();
 
 			formData.append("foodSeq", foodSeq);
@@ -282,8 +298,13 @@
 				contentType:false,
 				data:formData,
 				success:function(response){
-					alert(foodName +  " 식품 등록이 완료되었습니다.");
-					location.reload();
+					if(!foodName){
+						alert("수정이 완료되었습니다.");
+						}
+					else{
+						alert(foodName +  " 식품 등록이 완료되었습니다.");
+						location.reload();
+						}
 				},error:function(response){
 					if(response.status == 413){
 						alert("이미지 사이즈가 너무 큽니다.");
@@ -302,22 +323,39 @@
 		/* onclick="onclick=document.all.file.click()" */
 		/* 수정 */
 		$('.updateBtn').click(function(){
-			var dataParam = {
-					"foodSeq":$(this).parent().parent().children(":first-child").children().val(),
-					"foodName":$(this).parent().parent().children(":nth-child(3)").children().val(),
-					"foodExpiDate":$(this).parent().parent().children(":nth-child(4)").children().val()
+			var foodSeq = $(this).parent().parent().children(":first-child").children().val();
+			var foodName = $("#foodName"+foodSeq).val();
+			var foodExpiDate = $("#foodExpiDate"+foodSeq).val();
+			var updateImg = $("#updateImg"+foodSeq).get(0).files[0];
+
+			if(!foodName) {
+				alert("식품명을 입력해주세요.");
+				$("#foodName"+foodSeq).focus();
+				return;
 			}
+			if(!foodExpiDate) {
+				alert("유통기한을 입력해주세요.");
+				$("#foodExpiDate"+foodSeq).focus();
+				return;
+			}
+			
+			var dataParam = {
+					"foodSeq":foodSeq,
+					"foodName":foodName,
+					"foodExpiDate":foodExpiDate
+			}
+			
 			var btn = $(this);
-			var inputFoodName = $(this).parent().parent().children(":nth-child(3)").children();
-			var inputExpiDate = $(this).parent().parent().children(":nth-child(4)").children();
-			var updateImg = $(this).parent().parent().children(":nth-child(2)").children(":last-child");
+			var inputFoodName = $("#foodName"+foodSeq);
+			var inputExpiDate = $("#foodExpiDate"+foodSeq);
+			var updateBtn = $("#updateButton"+foodSeq);
 			
 			if (btn.val() == "수정") {
 				inputFoodName.removeAttr("disabled");
 				inputFoodName.attr("style", "border:1px solid #000000; background:#ffffff");
 				inputExpiDate.removeAttr("disabled");
 				inputExpiDate.attr("style", "border:1px solid #000000; background:#ffffff");
-				updateImg.removeAttr("style");
+				updateBtn.removeAttr("style");
 				
 				var len = inputFoodName.val().length;
 				inputFoodName[0].focus();
@@ -329,11 +367,16 @@
  				 $.ajax({
 					url:'/api/admin/food/update',
 					type:'post',
-					dataType:'text',
+					dataType:'json',
 					contentType:'application/json',
 					data:JSON.stringify(dataParam),
 					success:function(data){
-						alert("수정되었습니다.");
+						if(!updateImg){
+							alert("수정이 완료되었습니다.");
+							}
+						else{
+							regImg(data, updateImg);
+							}
 					},error:function(data){
 						alert(data.responseText);
 					}
@@ -343,7 +386,7 @@
  				inputFoodName.attr("style", "border:0px; background:#ffffff");
  				inputExpiDate.attr("disabled", "disabled");
  				inputExpiDate.attr("style", "border:0px; background:#ffffff");
- 				updateImg.attr("style", "display: none;");
+ 				updateBtn.attr("style", "display: none;");
 				
 				btn.attr("value", "수정");
 			}
@@ -364,7 +407,7 @@
 			
 			for(var i = 0; i < checkedFood.length; i++){
 				var foodSeq = {"foodSeq":checkedFood.get(i).value};
-				str += checkedFood.get(i).parentElement.parentElement.firstElementChild.nextElementSibling.nextElementSibling.firstElementChild.value + "\n";
+				str += $("#foodName"+checkedFood.get(i).value).val() + "\n";
 				dataParam.push(foodSeq);				
 				}
 			if(confirm("삭제하시겠습니까? \n" + str)){
@@ -376,7 +419,7 @@
 					data:JSON.stringify(dataParam),
 					success:function(data){
 						alert("삭제되었습니다.");
-						location.href = "/view/admin/category";
+						location.reload();
 					},error:function(data){
 						alert(data.responseText);
 					}
@@ -384,6 +427,31 @@
 			}else{
 				return;
 			}	
+		}
+
+		/*이미지 첨부*/
+		function addImg() {
+			$("#inputImg").click();
+		}
+		
+		/*이미지 미리보기*/
+		function preview(isNew, file, img) {
+			var reader = new FileReader;
+
+			if(isNew){
+				reader.onload = function(){
+					$("#previewImg").attr("src", reader.result);
+					}
+
+				reader.readAsDataURL($("#inputImg").get(0).files[0]);
+				}
+			else{
+				reader.onload = function(){
+					img.src = reader.result;
+					}
+
+				reader.readAsDataURL(file.files[0]);
+				}
 		}
 	</script>
 </body>

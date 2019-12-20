@@ -63,27 +63,27 @@ public class FoodRestController extends GeneralController {
 	}
 	
 	
-//	@PostMapping("/update")
-//	public ResponseEntity<?> updateCategory(@Valid @RequestBody UpdateCategoryRequest categoryRequest, BindingResult bindingResult) {
-//		logger.info("CategoryRestController updateCategory : "+ categoryRequest.toString());
-//		
-//		if(bindingResult.hasErrors()) {
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//		}
-//		
-//		return categoryService.updateCategory(categoryRequest);
-//	}
-//	
-//	@PostMapping("/delete")
-//	public ResponseEntity<?> deleteCategory(@Valid @RequestBody List<UpdateCategoryRequest> categoryRequest, BindingResult bindingResult) {
-//		logger.info("CategoryRestController updateCategory : "+ categoryRequest.toString());
-//		
-//		if(bindingResult.hasErrors()) {
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//		}
-//		
-//		return categoryService.deleteCategory(categoryRequest);
-//	}
+	@PostMapping("/update")
+	public ResponseEntity<?> updateCategory(@Valid @RequestBody UpdateFoodRequest foodRequest, BindingResult bindingResult) {
+		logger.info("FoodRestController updateFood : "+ foodRequest.toString());
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return foodService.updateFood(foodRequest);
+	}
+	
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteCategory(@Valid @RequestBody List<UpdateFoodRequest> foodRequest, BindingResult bindingResult) {
+		logger.info("FoodRestController deleteFood  : "+ foodRequest.toString());
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return foodService.deleteFood(foodRequest);
+	}
 //	
 //	@PostMapping("/check")
 //	@ResponseBody

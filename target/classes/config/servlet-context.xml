@@ -27,7 +27,8 @@
 	<resources mapping="/static/vendor/**" location="/static/vendor/" />
 	<resources mapping="/static/scss/**" location="/static/scss/" />
 	<resources mapping="/static/js/**" location="/static/js/" />
-
+	<resources mapping="/static/js/**" location="/static/js/" />
+	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />

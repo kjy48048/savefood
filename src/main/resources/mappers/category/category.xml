@@ -48,7 +48,8 @@
 			a.category_name,
             (SELECT COUNT(*) 
              FROM savefood.food 
-             WHERE category_seq = a.category_seq) food_count,
+             WHERE category_seq = a.category_seq
+             AND is_delete = 'N') food_count,
 			a.ord
 		FROM
 			savefood.category a

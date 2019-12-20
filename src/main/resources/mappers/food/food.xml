@@ -9,6 +9,27 @@
 		VALUES
 			(#{foodName}, #{expiDate}, #{categorySeq}, now());
 	</insert>
+	 
+	<update id="updateFood" parameterType="java.util.HashMap">
+		UPDATE
+			food
+		SET
+			food_name = #{foodName},
+			food_expi_date = #{foodExpiDate},
+			modify_date = now()
+		WHERE
+			food_seq = #{foodSeq};
+	</update>
+	
+	<update id="deleteFood" parameterType="java.util.HashMap">
+		UPDATE
+			food
+		SET
+			is_delete = 'Y',
+			modify_date = now()
+		WHERE
+			food_seq = #{foodSeq};
+	</update>
 	
 	<update id="updateFoodImg" parameterType="java.util.HashMap">
 		UPDATE
