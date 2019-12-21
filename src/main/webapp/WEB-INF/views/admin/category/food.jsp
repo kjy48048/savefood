@@ -75,7 +75,7 @@
 											<img id="previewImg${food.food_seq}" style="width: 70px; height:auto;" src="${pageContext.request.contextPath}/resources/img/no-img.png">
 										</c:when>
 										<c:otherwise>
-											<img id="previewImg${food.food_seq}" style="width: 70px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}">
+											<img id="previewImg${food.food_seq}" style="width: 70px; height:auto;" src="${pageContext.request.contextPath}${food.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'">
 										</c:otherwise>
 									</c:choose>
 										<input type="file" id="updateImg${food.food_seq}" style="display: none;" onchange="preview(false, document.getElementById('updateImg${food.food_seq}'), document.getElementById('previewImg${food.food_seq}'))">
