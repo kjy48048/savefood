@@ -91,9 +91,9 @@
 	            contentType: 'application/json',
 	            data:JSON.stringify(dataParam),
 	            success:function(data){
-	            	location.href = "/view/member/home";
+	            	location.href = data;
 	            },error:function(data){
-	            	alert(data.responseText);
+	            	alert(data);
 	            }
 	        });
 		}

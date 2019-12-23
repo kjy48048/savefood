@@ -67,7 +67,8 @@
 	<select id="loginUser" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			member.member_id,
-			password.member_password
+			password.member_password,
+			member.member_role_id
 		FROM
 			member as member
 		INNER JOIN

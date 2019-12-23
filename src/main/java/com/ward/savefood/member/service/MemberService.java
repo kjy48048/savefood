@@ -68,7 +68,7 @@ public class MemberService {
 				int creatUser = memberDao.creatPassword(passwordParam);
 				if(creatUser > 0) {
 					transactionManager.commit(status);
-					telegram.sendMessage(chatId, "SaveFood 가입을 축하합니다!");
+					telegram.sendMessage(chatId, "SaveFood 媛��엯�쓣 異뺥븯�빀�땲�떎!");
 					return new ResponseEntity<>("ok", HttpStatus.OK);
 				}
 			}
@@ -157,7 +157,18 @@ public class MemberService {
 				if(passwordUtil.checkHash(loginUserRequest.getPassword(), loginUserResult.get("member_password").toString())) {
 					session.setAttribute("loginInfo", loginUserRequest.getMemberId());
 					session.setMaxInactiveInterval(60 * 60);
-					return new ResponseEntity<>("ok", HttpStatus.OK);
+					
+					String uri = "";
+					
+					if((Integer)loginUserResult.get("member_role_id") == 1 || (Integer)loginUserResult.get("member_role_id") == 2)
+					{
+						uri = "/view/admin";
+					}
+					else {
+						uri = "/";
+					}
+					
+					return new ResponseEntity<>(uri, HttpStatus.OK);
 				}
 			}
 			return new ResponseEntity<>("select not user", HttpStatus.NO_CONTENT);
