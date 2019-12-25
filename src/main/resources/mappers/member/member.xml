@@ -77,4 +77,15 @@
 			member.member_id = #{memberId}
 			AND member.member_status = '1'
 	</select>
+	
+	<select id="getMemberCount" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			member_role.member_role_name,
+			(SELECT COUNT(*)
+			 FROM member as member
+			 WHERE member.member_role_id = member_role.member_role_id
+			   AND member.member_status = '1') role_count
+		FROM
+			member_role as member_role
+	</select>
 </mapper>

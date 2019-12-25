@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -58,16 +60,18 @@
 		            <div class="table-responsive">
 						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 							<thead>
-								<tr>
+								<tr style="text-align:center;">
 									<th>역할</th>
 									<th>수</th>
 								</tr>
 							</thead>
 							<tbody>
+								<c:forEach items="${role}" var="role" varStatus="roleList"> 
 								<tr>
-									<td>관리자</td>
-									<td>5</td>
+									<td style="vertical-align:middle;">${role.member_role_name}</td>
+									<td style="text-align:center; vertical-align:middle;">${role.role_count}</td>
 								</tr>
+								</c:forEach>
 							</tbody>
 						</table>
 		            </div>
@@ -84,18 +88,20 @@
 		            <div class="table-responsive">
 						<table class="table table-bordered" id="dataTable" width="100%">
 							<thead>
-								<tr>
+								<tr style="text-align:center;">
 									<th>식품명</th>
 									<th>카테고리</th>
 									<th>유통기한</th>
 								</tr>
 							</thead>
 							<tbody>
+								<c:forEach items="${food}" var="food" varStatus="foodList"> 
 								<tr>
-									<td>우유</td>
-									<td>유제품</td>
-									<td>10일</td>
+									<td style="vertical-align:middle;">${food.food_name}</td>
+									<td style="vertical-align:middle;">${food.category_name}</td>
+									<td style="text-align:center; vertical-align:middle;">${food.food_expi_date}</td>
 								</tr>
+								</c:forEach>
 							</tbody>
 						</table>
 		            </div>
