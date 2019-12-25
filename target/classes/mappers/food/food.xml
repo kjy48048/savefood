@@ -67,4 +67,15 @@
 			AND a.is_delete = 'N'
 		ORDER BY food_name;
 	</select>
+	
+	<select id="getAllFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			food.food_name,
+            food.food_expi_date,
+            category.category_name
+		FROM food as food
+		LEFT JOIN category as category ON food.category_seq = category.category_seq
+		WHERE food.is_delete = 'N'
+		ORDER BY food_name;
+	</select>
 </mapper>

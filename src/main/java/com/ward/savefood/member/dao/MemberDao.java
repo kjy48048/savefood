@@ -1,5 +1,6 @@
 package com.ward.savefood.member.dao;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,5 @@ public interface MemberDao {
 	int updateAuth(Map<String, Object> updateAuth);
 	Map<String, Object> loginUser(String memberId);
 	Map<String, Object> loginUserRole(String memberId);
+	ArrayList<Map<String, Object>> getMemberCount();
 }

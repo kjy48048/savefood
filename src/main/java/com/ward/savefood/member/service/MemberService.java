@@ -1,6 +1,7 @@
 package com.ward.savefood.member.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -203,5 +204,17 @@ public class MemberService {
 			e.printStackTrace();
 			return new ResponseEntity<>("fail logoutUser", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	public ArrayList<Map<String, Object>> getMemberCount() {
+		
+		try {
+			ArrayList<Map<String, Object>> map = memberDao.getMemberCount();
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

@@ -222,4 +222,18 @@ public class FoodService {
 
 		return null;
 	}
+	
+	public ArrayList<Map<String, Object>> getAllFoodList() {	
+		try {	
+
+			ArrayList<Map<String, Object>> selectResult = foodDao.getAllFoodList();
+			
+			return selectResult;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }
