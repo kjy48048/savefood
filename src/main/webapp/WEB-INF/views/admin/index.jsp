@@ -52,7 +52,7 @@
 			<div class="card mb-3">
 				<div class="card-header">
 					<i class="fas fa-table"></i>
-					고객
+					고객현황
 				</div>
 		 		<div class="card-body">
 		            <div class="table-responsive">
@@ -68,10 +68,6 @@
 									<td>관리자</td>
 									<td>5</td>
 								</tr>
-								<tr>
-									<td>고객</td>
-									<td>10</td>
-								</tr>
 							</tbody>
 						</table>
 		            </div>
@@ -82,34 +78,23 @@
 			<div class="card mb-3">
 				<div class="card-header">
 					<i class="fas fa-table"></i>
-					카테고리
+					식품현황
 				</div>
 		 		<div class="card-body">
 		            <div class="table-responsive">
 						<table class="table table-bordered" id="dataTable" width="100%">
 							<thead>
 								<tr>
-									<th>번호</th>
 									<th>식품명</th>
-									<th>유형</th>
+									<th>카테고리</th>
 									<th>유통기한</th>
-									<th>등록일자</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>1</td>
 									<td>우유</td>
 									<td>유제품</td>
 									<td>10일</td>
-									<td>2019.11.20 18:31</td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>식빵</td>
-									<td>빵류</td>
-									<td>3일</td>
-									<td>2019.11.20 18:30</td>
 								</tr>
 							</tbody>
 						</table>

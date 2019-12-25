@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -44,29 +46,61 @@
 				<li class="breadcrumb-item active">Overview</li>
 			</ol>
 			
+			<input type="button" class="btn btn-primary" onclick="save()" value="저장">
+			<p>
+			
 			<!-- DataTables Example -->
-		 		<div class="card-body">
-		            <div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-							<thead>
-								<tr>
-									<th>역할</th>
-									<th>수</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>관리자</td>
-									<td>5</td>
-								</tr>
-								<tr>
-									<td>고객</td>
-									<td>10</td>
-								</tr>
-							</tbody>
-						</table>
-		            </div>
-		 		</div>				
+			<div class="table-responsive">
+				<table class="table table-bordered" id="dataTable">
+					<thead>
+						<tr style="text-align : center">
+							<th>번호</th>
+							<th>아이디</th>
+							<th>역할</th>
+							<th>상태</th>
+							<th>가입일자</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${memberList}" var="member" varStatus="memberList"> 
+						<tr>
+							<td style="text-align:center; vertical-align:middle;">${memberList.count}</td>
+							<td style="vertical-align:middle;">${member.member_id}</td>
+							<td style="text-align:center; vertical-align:middle;">
+								<c:forEach items="${role}" var="role" varStatus="roleList">
+									<c:when test="${empty member.member_role_id}">
+										<option value="${role.member_role_id}" selected>${role.member_role_name}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${member.member_role_id}">${role.member_role_name}</option>
+									</c:otherwise>
+								</c:forEach>
+							</td>
+							<td style="text-align:center; vertical-align:middle;">
+								<c:forEach items="${status}" var="status" varStatus="statusList">
+									<c:when test="">
+										<option value="" selected></option>
+									</c:when>
+									<c:otherwise>
+										<option value="${status.member_status_id}">${role.member_status_name}</option>
+									</c:otherwise>
+								</c:forEach>
+							</td>
+							<td style="text-align:center; vertical-align:middle;">${member.insert_date}</td>
+						</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>			
+
+<%-- <c:choose>
+							<c:when test="${status.index == 0 }">
+								<option value="${key.saveplace_storage_code }" selected>${key.saveplace_storage_name }</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${key.saveplace_storage_code }" >${key.saveplace_storage_name }</option>
+							</c:otherwise>
+						</c:choose>	 --%>
 
 
 <!-- /.container-fluid -->
