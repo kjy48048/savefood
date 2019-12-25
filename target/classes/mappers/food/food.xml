@@ -78,4 +78,5 @@
 		WHERE food.is_delete = 'N'
 		ORDER BY food_name;
 	</select>
+	
 </mapper>

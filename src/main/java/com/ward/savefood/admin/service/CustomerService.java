@@ -36,17 +36,20 @@ public class CustomerService {
 			
 			for(int i = 0; i < updateCustomerRequest.size(); i++) {	
 				int memberSeq = updateCustomerRequest.get(i).getMemberSeq();
-				int memberRoleId = updateCustomerRequest.get(i).getMemberRoleId();
-				int memberStatusId = updateCustomerRequest.get(i).getMemberStatusId();
+				int memberRole = updateCustomerRequest.get(i).getMemberRoleId();
+				int memberStatus = updateCustomerRequest.get(i).getMemberStatusId();
 				
 				if(memberSeq == 0) {
 					return new ResponseEntity<>("input Customer info", HttpStatus.NO_CONTENT);
 				}
+				
+				if(memberRole > 0 || memberStatus > 0) {
 				Map<String, Object> updateCustomer = new HashMap<String, Object>();
 				updateCustomer.put("memberSeq", memberSeq);
-				updateCustomer.put("memberRoleId", memberRoleId);
-				updateCustomer.put("memberStatusId", memberStatusId);
+				updateCustomer.put("memberRole", memberRole);
+				updateCustomer.put("memberStatus", memberStatus);
 				updateResult += customerDao.updateCustomer(updateCustomer);		
+				}
 			}
 			
 			if(updateResult > 0) {
@@ -61,12 +64,11 @@ public class CustomerService {
 		return new ResponseEntity<>("fail to update customer", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ArrayList<Map<String, Object>> selectMemberList(int page, int order, boolean isEditable) {	
+	public ArrayList<Map<String, Object>> selectMemberList(int page, int order) {	
 		
 		try {				
 			Map<String, Object> selectQuary = new HashMap<String, Object>();
 			selectQuary.put("page", page);
-			selectQuary.put("isEditable", isEditable);
 			selectQuary.put("order", order);
 			ArrayList<Map<String, Object>> selectResult = customerDao.selectMemberList(selectQuary);
 			
@@ -110,7 +112,7 @@ public class CustomerService {
 		try {	
 
 			Map<String, Object> selectResult = customerDao.selectPager();
-			int maxPage = (int)selectResult.get("cnt");
+			int maxPage = (int)(long)selectResult.get("cnt");
 			
 			return maxPage/100 + 1;
 			

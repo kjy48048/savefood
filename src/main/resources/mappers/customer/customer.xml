@@ -5,14 +5,27 @@
 	 
 	<update id="updateCustomer" parameterType="java.util.HashMap">
 		UPDATE
-			customer
+			member
 		SET
-			<if test="memberRoleId != null"> member_role_id = #{memberRoleId}, </if>
-			<if test="memberStatusId != null"> member_status_id = #{memberStatusId}, </if>
+			<if test="memberRole > 0"> member_role_id = #{memberRole}, </if>
+			<if test="memberStatus > 0"> member_status = #{memberStatus}, </if>
 			modify_date = now()
 		WHERE
 			member_seq = #{memberSeq};
 	</update>
+	
+	<select id="selectMemberList" resultType="java.util.HashMap">
+		SELECT
+			member.member_seq,
+			member.member_id,
+			member.member_role_id,
+			role.member_role_name,
+			member.member_status,
+			member.insert_date
+		FROM member as member
+		INNER JOIN member_role as role ON member.member_role_id = role.member_role_id
+		ORDER BY member.member_role_id ASC;
+	</select>
 	
 	<select id="selectRoleList" resultType="java.util.HashMap">
 		SELECT
@@ -29,7 +42,7 @@
 		FROM member_status;
 	</select>
 	
-	<select id="selectPager" resultType="int">
+	<select id="selectPager" resultType="java.util.HashMap">
 		SELECT
 			count(*) as cnt
 		FROM member;

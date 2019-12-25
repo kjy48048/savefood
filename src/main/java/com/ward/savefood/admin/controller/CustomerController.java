@@ -27,18 +27,18 @@ public class CustomerController {
 	@GetMapping("")
 	public String customer(Model model,HttpServletRequest request) throws Exception {
 		
-		int page = (int)request.getAttribute("page");
-		int order = (int)request.getAttribute("order");
+		int page = request.getAttribute("page") == null ? 0 : (int)request.getAttribute("page");
+		int order = request.getAttribute("order") == null ? 0 :(int)request.getAttribute("order");
 		int userRole = memberService.loginUserRole(request);
 		boolean isEditable = false;
-		
 		if(userRole == 1) {
 			isEditable = true;
 			model.addAttribute("role", customerService.selectRoleList());
 		};
+			model.addAttribute("isEditable", isEditable);
 			model.addAttribute("maxPage", customerService.selectPager());
 			model.addAttribute("status", customerService.selectStatusList());
-			model.addAttribute("memberList", customerService.selectMemberList(page, order, isEditable));
+			model.addAttribute("memberList", customerService.selectMemberList(page, order));
 		
 		return "admin/customer/index";
 	}

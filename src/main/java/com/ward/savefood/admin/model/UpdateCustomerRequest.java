@@ -6,8 +6,8 @@ public class UpdateCustomerRequest {
 	
 	@NotNull
 	private int memberSeq;
-	private int memberRoleId;
-	private int memberStatusId;
+	private int memberRole;
+	private int memberStatus;
 	
 	public int getMemberSeq() {
 		return memberSeq;
@@ -16,21 +16,21 @@ public class UpdateCustomerRequest {
 		this.memberSeq = memberSeq;
 	}
 	public int getMemberRoleId() {
-		return memberRoleId;
+		return memberRole;
 	}
 	public void setMemberRoleId(int memberRoleId) {
-		this.memberRoleId = memberRoleId;
+		this.memberRole = memberRoleId;
 	}
 	public int getMemberStatusId() {
-		return memberStatusId;
+		return memberStatus;
 	}
 	public void setMemberStatusId(int memberStatusId) {
-		this.memberStatusId = memberStatusId;
+		this.memberStatus = memberStatusId;
 	}
 	@Override
 	public String toString() {
-		return "UpdateCustomerRequest [memberSeq=" + memberSeq + ", memberRoleId=" + memberRoleId + ", memberStatusId="
-				+ memberStatusId + "]";
+		return "UpdateCustomerRequest [memberSeq=" + memberSeq + ", memberRoleId=" + memberRole + ", memberStatusId="
+				+ memberStatus + "]";
 	}
 	
 }
