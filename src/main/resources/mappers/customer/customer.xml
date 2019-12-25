@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.ward.savefood.admin.dao.CustomerDao">
+	 
+	<update id="updateCustomer" parameterType="java.util.HashMap">
+		UPDATE
+			customer
+		SET
+			<if test="memberRoleId != null"> member_role_id = #{memberRoleId}, </if>
+			<if test="memberStatusId != null"> member_status_id = #{memberStatusId}, </if>
+			modify_date = now()
+		WHERE
+			member_seq = #{memberSeq};
+	</update>
+	
+	<select id="selectRoleList" resultType="java.util.HashMap">
+		SELECT
+			member_role_id,
+			member_role_name
+		FROM member_role
+		WHERE is_delete = 'N';
+	</select>
+	
+	<select id="selectStatusList" resultType="java.util.HashMap">
+		SELECT
+			member_status_id,
+			member_status_name
+		FROM member_status;
+	</select>
+	
+	<select id="selectPager" resultType="int">
+		SELECT
+			count(*) as cnt
+		FROM member;
+	</select>
+</mapper>

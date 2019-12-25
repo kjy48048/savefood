@@ -30,13 +30,13 @@
 				<form>
 					<div class="form-group">
 						<div class="form-label-group">
-							<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
+							<input type="email" id="inputEmail" class="form-control login-element" placeholder="Email address" required="required" autofocus="autofocus">
 							<label for="inputEmail">아이디(이메일)</label>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="form-label-group">
-							<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
+							<input type="password" id="inputPassword" class="form-control login-element" placeholder="Password" required="required">
 							<label for="inputPassword">비밀번호</label>
 						</div>
 					</div>
@@ -66,6 +66,13 @@
 	<script src="../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 	<script>
+
+		$(".login-element").on("keydown", function(event){
+			if(event.keyCode == 13){
+					login();
+				};
+			});
+	
 		function login() {
 			var dataParam = {
 				"memberId":$("#inputEmail").val(),
@@ -76,12 +83,14 @@
 			if(!memberId) {
 				alert("아이디를 입력해주세요.");
 				$("#inputEmail").focus();
+				return;
 			}
 			
 			var password = $("#inputPassword").val();
 			if(!password) {
 				alert("비밀번호를 입력해주세요.");
 				$("#inputPassword").focus();
+				return;
 			}
 			
 			$.ajax({

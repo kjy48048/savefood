@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -175,6 +176,17 @@ public class MemberService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>("fail loginUser", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	public int loginUserRole(HttpServletRequest request) {
+		
+		try {
+			HttpSession session = request.getSession();
+			Map<String, Object> userRole = memberDao.loginUserRole((String)session.getAttribute("loginInfo"));
+			return (int)userRole.get("member_role_id");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
 		}
 	}
 

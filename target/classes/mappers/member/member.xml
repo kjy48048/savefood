@@ -77,4 +77,15 @@
 			member.member_id = #{memberId}
 			AND member.member_status = '1'
 	</select>
+	
+	<select id="loginUserRole" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			member.member_role_id
+		FROM
+			member as member
+		WHERE
+			member.member_id = #{memberId}
+			AND member.member_status = '1'
+	</select>
+	
 </mapper>

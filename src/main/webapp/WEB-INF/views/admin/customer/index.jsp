@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -50,19 +52,15 @@
 						<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 							<thead>
 								<tr>
+									<th>멤버시퀀스</th>
+									<th>아이디</th>
+									<th>가입일자</th>
 									<th>역할</th>
-									<th>수</th>
+									<th>회원상태</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>관리자</td>
-									<td>5</td>
-								</tr>
-								<tr>
-									<td>고객</td>
-									<td>10</td>
-								</tr>
+								
 							</tbody>
 						</table>
 		            </div>
