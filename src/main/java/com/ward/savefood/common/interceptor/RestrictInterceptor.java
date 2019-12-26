@@ -19,7 +19,6 @@ public class RestrictInterceptor extends HandlerInterceptorAdapter {
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		System.out.println("包府磊 其捞瘤 立辟");
 		
 		try {
 			HttpSession session = request.getSession();

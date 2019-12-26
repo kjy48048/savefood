@@ -17,5 +17,6 @@ public interface MemberDao {
 	String getAuthKey(String memberId);
 	int updateAuth(Map<String, Object> updateAuth);
 	Map<String, Object> loginUser(String memberId);
+	Map<String, Object> loginUserRole(String memberId);
 	ArrayList<Map<String, Object>> getMemberCount();
 }

@@ -64,43 +64,51 @@
 					<tbody>
 						<c:forEach items="${memberList}" var="member" varStatus="memberList"> 
 						<tr>
-							<td style="text-align:center; vertical-align:middle;">${memberList.count}</td>
+							<td style="text-align:center; vertical-align:middle;">
+								<div>${memberList.count}</div>
+							</td>
 							<td style="vertical-align:middle;">${member.member_id}</td>
 							<td style="text-align:center; vertical-align:middle;">
-								<c:forEach items="${role}" var="role" varStatus="roleList">
-									<c:when test="${empty member.member_role_id}">
-										<option value="${role.member_role_id}" selected>${role.member_role_name}</option>
+								<c:choose>
+									<c:when test="${isEditable}">
+										<select id="member-role-${memberList.count}" data-member-seq="${member.member_seq }" style="width:100%; height:100%;" onchange="roleChange(document.querySelector('#member-role-${memberList.count }'))">
+											<c:forEach items="${role}" var="role" varStatus="roleList">
+												<c:choose>
+													<c:when test="${role.member_role_id == member.member_role_id}">
+														<option value="${role.member_role_id}" selected>${role.member_role_name}</option>
+													</c:when>
+													<c:otherwise>
+														<option value="${role.member_role_id}">${role.member_role_name}</option>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+										</select>
 									</c:when>
 									<c:otherwise>
-										<option value="${member.member_role_id}">${role.member_role_name}</option>
+										<div> ${member.member_role_name} </div>
 									</c:otherwise>
-								</c:forEach>
+								</c:choose>
 							</td>
 							<td style="text-align:center; vertical-align:middle;">
-								<c:forEach items="${status}" var="status" varStatus="statusList">
-									<c:when test="">
-										<option value="" selected></option>
-									</c:when>
-									<c:otherwise>
-										<option value="${status.member_status_id}">${role.member_status_name}</option>
-									</c:otherwise>
-								</c:forEach>
+								<select id="member-status-${memberList.count}" data-member-seq="${member.member_seq }" style="width:100%; height:100%;" onchange="statusChange(document.querySelector('#member-status-${memberList.count }'))">
+									<c:forEach items="${status}" var="status" varStatus="statusList">
+										<c:choose>
+											<c:when test="${status.member_status_id == member.member_status }">
+												<option value="${status.member_status_id}" selected>${status.member_status_name}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${status.member_status_id}">${status.member_status_name}</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
 							</td>
 							<td style="text-align:center; vertical-align:middle;">${member.insert_date}</td>
 						</tr>
 						</c:forEach>
 					</tbody>
 				</table>
-			</div>			
-
-<%-- <c:choose>
-							<c:when test="${status.index == 0 }">
-								<option value="${key.saveplace_storage_code }" selected>${key.saveplace_storage_name }</option>
-							</c:when>
-							<c:otherwise>
-								<option value="${key.saveplace_storage_code }" >${key.saveplace_storage_name }</option>
-							</c:otherwise>
-						</c:choose>	 --%>
+			</div>		
 
 
 <!-- /.container-fluid -->
@@ -149,6 +157,62 @@
 	<script src="../../static/js/sb-admin.min.js"></script>
 
 	<script>
+
+		$(document).ready(function(){
+			result = [<c:forEach var="member" items="${memberList}" varStatus="status">
+				{memberSeq:${member.member_seq}, 
+				oldMemberRole:${member.member_role_id}, 
+				oldMemberStatus:${member.member_status},
+				memberRole:0,
+				memberStatus:0}
+				<c:if test="${!status.last}">,</c:if>
+			</c:forEach>];
+			
+			
+			});
+
+			function roleChange(element){
+				result.forEach(function(item){
+						if(item.memberSeq == element.dataset.memberSeq){
+								if(item.oldMemberRole == element.value){
+										item.memberRole = 0;
+									}
+								else{
+										item.memberRole = parseInt(element.value);
+									};
+							};
+					});
+			};
+
+			function statusChange(element){
+				result.forEach(function(item){
+					if(item.memberSeq == element.dataset.memberSeq){
+							if(item.oldMemberStatus == element.value){
+									item.memberStatus = 0;
+								}
+							else{
+									item.memberStatus = parseInt(element.value);
+								};
+						};
+				});
+			};
+			
+			function save(){			
+				 $.ajax({
+						url:'/api/admin/customer/update',
+						type:'post',
+						dataType:'text',
+						contentType:'application/json',
+						data:JSON.stringify(result),
+						success:function(data){
+							alert("저장되었습니다.");
+							location.reload();
+						},error:function(data){
+							alert(data.responseText);
+						}
+					}); 
+			};
+		
 		function logout() {
 			$.ajax({
 		        url:'/api/member/logout',
