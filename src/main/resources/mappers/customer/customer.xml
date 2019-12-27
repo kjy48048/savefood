@@ -7,7 +7,7 @@
 		UPDATE
 			member
 		SET
-			<if test="memberRole > 0"> member_role_id = #{memberRole}, </if>
+			<if test="memberRole > 0 &amp;&amp; isEditable"> member_role_id = #{memberRole}, </if>
 			<if test="memberStatus > 0"> member_status = #{memberStatus}, </if>
 			modify_date = now()
 		WHERE

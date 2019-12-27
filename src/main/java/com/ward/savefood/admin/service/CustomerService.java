@@ -28,7 +28,7 @@ public class CustomerService {
 	
 	private DefaultTransactionDefinition def = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
 
-	public ResponseEntity<?> updateCustomer(List<UpdateCustomerRequest> updateCustomerRequest) {
+	public ResponseEntity<?> updateCustomer(List<UpdateCustomerRequest> updateCustomerRequest, boolean isEditable) {
 		TransactionStatus status = transactionManager.getTransaction(def);
 		
 		try {						
@@ -44,11 +44,12 @@ public class CustomerService {
 				}
 				
 				if(memberRole > 0 || memberStatus > 0) {
-				Map<String, Object> updateCustomer = new HashMap<String, Object>();
-				updateCustomer.put("memberSeq", memberSeq);
-				updateCustomer.put("memberRole", memberRole);
-				updateCustomer.put("memberStatus", memberStatus);
-				updateResult += customerDao.updateCustomer(updateCustomer);		
+					Map<String, Object> updateCustomer = new HashMap<String, Object>();
+					updateCustomer.put("memberSeq", memberSeq);
+					updateCustomer.put("memberRole", memberRole);
+					updateCustomer.put("memberStatus", memberStatus);
+					updateCustomer.put("isEditable", isEditable);
+					updateResult += customerDao.updateCustomer(updateCustomer);		
 				}
 			}
 			

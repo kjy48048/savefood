@@ -98,11 +98,17 @@
 	            type:'post',
 	            dataType:'text',
 	            contentType: 'application/json',
+	            async:false,
 	            data:JSON.stringify(dataParam),
-	            success:function(data){
-	            	location.href = data;
-	            },error:function(data){
-	            	alert(data);
+	            success:function(data,textStatus,jqXHR){
+		            if(jqXHR.status == "204"){
+							alert("회원정보가 없거나 비밀번호가 틀렸습니다.");
+			            }
+		            else{
+	            			location.href = data;
+			            }
+	            },error:function(request, status, error){
+	            	   alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 	            }
 	        });
 		}
