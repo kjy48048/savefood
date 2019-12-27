@@ -22,8 +22,8 @@ public class AdminController {
 	
 	@GetMapping("")
 	public String admin(Model model, HttpSession session) throws Exception {
-//		if(session.getAttribute("loginInfo") != null) {
-		
+////		if(session.getAttribute("loginInfo") != null) {
+//		
 			model.addAttribute("role", memberService.getMemberCount());
 			model.addAttribute("food", foodService.getAllFoodList());
 			return "admin/index";
