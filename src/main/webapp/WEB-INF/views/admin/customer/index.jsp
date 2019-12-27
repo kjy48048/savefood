@@ -182,6 +182,7 @@
 									};
 							};
 					});
+				
 			};
 
 			function statusChange(element){
@@ -198,6 +199,19 @@
 			};
 			
 			function save(){			
+				var updateCnt = 0;
+
+				result.forEach(function(item){
+						if(item.memberRole != 0 || item.memberStatus != 0){
+								updateCnt++;
+							}
+					});
+				
+				if(updateCnt == 0){
+						alert("수정사항이 없습니다.");
+						return;
+					};
+				
 				 $.ajax({
 						url:'/api/admin/customer/update',
 						type:'post',

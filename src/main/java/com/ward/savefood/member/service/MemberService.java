@@ -159,7 +159,7 @@ public class MemberService {
 				if(passwordUtil.checkHash(loginUserRequest.getPassword(), loginUserResult.get("member_password").toString())) {
 					session.setAttribute("loginInfo", loginUserRequest.getMemberId());
 					session.setMaxInactiveInterval(60 * 60);
-					
+
 					String uri = "";
 					
 					if((Integer)loginUserResult.get("member_role_id") == 1 || (Integer)loginUserResult.get("member_role_id") == 2)

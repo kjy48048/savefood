@@ -30,7 +30,7 @@ public class Interceptor extends HandlerInterceptorAdapter {
 				error.put("error", ex.getMessage());
 			}
 			
-			telegram.sendError(new Gson().toJson(error));
+			//telegram.sendError(new Gson().toJson(error));
 		}
 	}
 }
