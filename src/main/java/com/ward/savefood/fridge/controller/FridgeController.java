@@ -20,6 +20,16 @@ public class FridgeController {
 	@Autowired
 	private FridgeService fridgeService;
 	
+	@GetMapping("")
+	public String index(Model model, HttpSession session) throws Exception {
+		if(session.getAttribute("loginInfo") != null) {
+			
+			return "fridge/index";
+		}
+		
+		return "redirect:/view/member/login";
+	}
+	
 	@GetMapping("/fridge")
 	public String fridge(Model model, HttpSession session) throws Exception {
 		if(session.getAttribute("loginInfo") != null) {

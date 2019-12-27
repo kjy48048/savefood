@@ -36,12 +36,16 @@
 		<div id="content-wrapper">
 
 			<div class="container-fluid">
-
+고객 대쉬보드입니다
 				<!-- Breadcrumbs-->
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">냉장고1</a>
-					</li>
+					<li class="breadcrumb-item">추천레시피</li>
+					<li class="breadcrumb-item active">Overview</li>
+				</ol>
+				
+				<!-- Breadcrumbs-->
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">냉장고1</li>
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 
@@ -99,9 +103,7 @@
 				
 				<!-- Breadcrumbs-->
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">냉장고2</a>
-					</li>
+					<li class="breadcrumb-item">냉장고2</li>
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 
@@ -159,10 +161,8 @@
 				
 				<!-- Breadcrumbs-->
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">상온</a>
-					</li>
-					<li class="breadcrumb-item active"></li>
+					<li class="breadcrumb-item">상온</li>
+					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 
 				<!-- Icon Cards-->
