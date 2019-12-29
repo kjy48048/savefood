@@ -10,5 +10,45 @@
 		FROM
 			saveplace_storage
 	</select>
-
+	
+	<select id="getMemberSeq" resultType="String">
+		SELECT
+			member_seq
+		FROM
+			member
+		WHERE
+			member_id = #{memberId}
+	</select>
+	
+	<select id="getFridgeList" resultType="java.util.HashMap">
+		SELECT fridge_seq, fridge_name
+		FROM
+			fridge
+		WHERE 
+			member_seq = #{memberSeq}
+			AND is_delete = 'N';
+	</select>
+	
+	<select id="getSaveplaceList" resultType="java.util.HashMap">
+		SELECT saveplace_seq, fridge_seq, saveplace_name
+		FROM
+			saveplace
+		WHERE
+			<foreach collection="fridgeSeqList" item="item" separator="or" index="index">
+			fridge_seq = #{item}
+			</foreach>
+			AND is_delete = 'N';
+	</select>
+	
+	<select id="getSavefoodList" resultType="java.util.HashMap">
+		SELECT
+			*, count(*) as count
+		FROM
+			savefood
+		WHERE
+			<foreach collection="saveplaceSeqList" item="item" separator="or" index="index">
+			saveplace_seq = #{item}
+			</foreach>
+			AND is_delete = 'N';
+	</select>
 </mapper>

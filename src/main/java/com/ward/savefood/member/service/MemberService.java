@@ -70,7 +70,7 @@ public class MemberService {
 				int creatUser = memberDao.creatPassword(passwordParam);
 				if(creatUser > 0) {
 					transactionManager.commit(status);
-					telegram.sendMessage(chatId, "SaveFood 媛��엯�쓣 異뺥븯�빀�땲�떎!");
+					telegram.sendMessage(chatId, "SaveFood 가입을 축하합니다!");
 					return new ResponseEntity<>("ok", HttpStatus.OK);
 				}
 			}
@@ -179,6 +179,7 @@ public class MemberService {
 			return new ResponseEntity<>("fail loginUser", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
 	public int loginUserRole(HttpServletRequest request) {
 		
 		try {
