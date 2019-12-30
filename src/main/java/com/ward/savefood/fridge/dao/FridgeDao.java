@@ -13,7 +13,7 @@ public interface FridgeDao {
 
 	String getMemberSeq(String memberId);
 	ArrayList<Map<String, Object>> getFridgeList(String memberSeq);
-	ArrayList<Map<String, Object>> getSaveplaceList(@Param("fridgeSeqList")int[] fridgeSeqList);
+	ArrayList<Map<String, Object>> getSaveplace(@Param("fridgeSeqList")int[] fridgeSeqList);
 	ArrayList<Map<String, Object>> getSavefoodList(@Param("saveplaceSeqList")int[] saveplaceSeqList);
 	
 	ArrayList<Map<String, Object>> getSaveplaceList(String fridgeSeq);

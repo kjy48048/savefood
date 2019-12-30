@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.ward.savefood.fridge.dao.FridgeDao">
- 
 	<select id="getStorage" resultType="java.util.HashMap">
 		SELECT
 			saveplace_storage_code,
@@ -11,4 +10,52 @@
 			saveplace_storage
 	</select>
 
+	<select id="getMemberSeq" resultType="String">
+		SELECT
+			member_seq
+		FROM
+         member
+      WHERE
+         member_id = #{memberId}
+   </select>
+   
+   <select id="getFridgeList" resultType="java.util.HashMap">
+      SELECT fridge_seq, fridge_name
+      FROM
+         fridge
+      WHERE 
+         member_seq = #{memberSeq}
+         AND is_delete = 'N';
+   </select>
+   
+   <select id="getSaveplace" resultType="java.util.HashMap">
+      SELECT saveplace_seq, fridge_seq, saveplace_name
+      FROM
+         saveplace
+      WHERE
+         <foreach collection="fridgeSeqList" item="item" separator="or" index="index">
+         fridge_seq = #{item}
+         </foreach>
+         AND is_delete = 'N';
+<!--          <choose>
+            <when test="fridgeSeqList.size() != 0">
+            AND is_delete = 'N';
+            </when>
+            <otherwise>
+            is_delete = 'N';
+            </otherwise>
+         </choose> -->
+   </select>
+   
+   <select id="getSavefoodList" resultType="java.util.HashMap">
+      SELECT
+         *, count(*) as count
+      FROM
+         savefood
+      WHERE
+         <foreach collection="saveplaceSeqList" item="item" separator="or" index="index">
+         saveplace_seq = #{item}
+         </foreach>
+         AND is_delete = 'N';
+   </select>
 </mapper>

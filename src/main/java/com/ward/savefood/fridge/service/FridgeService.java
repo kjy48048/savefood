@@ -42,7 +42,7 @@ public class FridgeService {
 	}
 
 	public ArrayList<Map<String, Object>> getSaveplaceList(int[] fridgeSeqList) {
-		ArrayList<Map<String, Object>> saveplaceList = fridgeDao.getSaveplaceList(fridgeSeqList);
+		ArrayList<Map<String, Object>> saveplaceList = fridgeDao.getSaveplace(fridgeSeqList);
 		return saveplaceList;
 	}
 
