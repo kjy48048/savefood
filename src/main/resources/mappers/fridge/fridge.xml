@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.ward.savefood.fridge.dao.FridgeDao">
- 
 	<select id="getStorage" resultType="java.util.HashMap">
 		SELECT
 			saveplace_storage_code,
@@ -97,5 +96,6 @@
 			modify_date = now()
 		WHERE
 			saveplace_seq = #{saveplaceSeq};
-	</update>	
+	</update>
+	
 </mapper>

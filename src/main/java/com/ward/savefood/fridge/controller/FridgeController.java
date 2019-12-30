@@ -106,4 +106,20 @@ public class FridgeController {
 //		
 //		return "member/join";
 //	}
+	
+	@GetMapping("/management")
+	public String management(Model model, HttpServletRequest request, HttpSession session) throws Exception {
+		if(session.getAttribute("loginInfo") != null) {
+			
+//			String fridgeSeq = request.getParameter("fridge");
+//			
+//			model.addAttribute("storage", fridgeService.getStorage());
+//			model.addAttribute("fridgeSeq", Integer.parseInt(fridgeSeq));
+//			model.addAttribute("saveplaceList", fridgeService.getSaveplaceList(fridgeSeq));
+
+			return "fridge/management";
+		}
+		
+		return "redirect:/view/member/login";
+	}
 }
