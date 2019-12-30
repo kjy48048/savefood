@@ -22,6 +22,13 @@
 	<!-- Custom styles for this template-->
 	<link href="../../static/css/sb-admin.css" rel="stylesheet">
 
+
+	<style type="text/css">
+	 #aaa{
+		 float:right; 
+	 }
+	</style>
+
 </head>
 
 <body id="page-top">
@@ -206,6 +213,40 @@
 						</div>
 					</div>
 				</div>
+				
+				<!-- Breadcrumbs-->
+				<c:forEach items="${saveplaceList}" var="saveplace" varStatus="list"> 
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item" style="width: auto;">
+						<!-- <a href="#" id="saveplaceName${saveplace.saveplace_seq}">${saveplace.saveplace_name}</a> -->
+						<a href="#">
+							<input id="saveplaceName${saveplace.saveplace_seq}" type="text"
+								style="border:0px; background-color: transparent;" 
+								value="${saveplace.saveplace_name}" disabled>
+						</a>	
+					</li>
+					<li class="breadcrumb-item active">
+						<i class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
+						<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
+					</li>
+					
+				</ol>
+				</c:forEach>					
+				
+				
+				<!-- Area Chart Example-->
+<!-- 
+				<div class="card mb-3">
+					<div class="card-header">
+						<i class="fas fa-chart-area"></i>
+						Area Chart Example</div>
+					<div class="card-body">
+						<canvas id="myAreaChart" width="100%" height="30"></canvas>
+					</div>
+					<div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+				</div>
+			
+ -->
 			</div>
 					
 			
@@ -250,7 +291,7 @@
 			</div>
 			<div class="form-group">
 				<label for="storage">보관장소분류</label>
-				<select id="storage" class="form-control" required>
+				<select id="comboStorage" class="form-control" required>
 					<c:forEach items="${storage}" var="key" varStatus="status">
 						<c:choose>
 							<c:when test="${status.index == 0 }">
@@ -265,8 +306,8 @@
 			</div>	
 	      </div>
 	      <div class="modal-footer"> 
-			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			<input type="submit" class="btn btn-success" id="submit">	      
+			<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+			<button type="button" class="btn btn-success" onclick="regSaveplace()">등록</button>     
 	      </div>
 	    </div>
 	  </div>
@@ -319,13 +360,104 @@
 		        }
 		    });
 		}
-
+		
+		// 보관장소 등록 팝업
 	 	function showModal() {
 			$("#saveplaceModal").modal();
 		} 
 
-	</script>
+	 // 보관장소 등록 처리
+		function regSaveplace() {
+			var saveplace = $("#inputSaveplace").val();
+			var storage = $("#comboStorage").val();	
+			//var fridgeSeq = "${fridgeSeq}";
+			var fridgeSeq = 1;	
+
+			alert(saveplace);
+			alert(storage);
+			alert(fridgeSeq);
+
+			if(!saveplace) {
+				alert("보관장소 이름을 입력해주세요.");
+				$("#inputSaveplace").focus();
+			}
+			if(!storage) {
+				alert("보관장소 분류를 선택해주세요.");
+				$("#comboStorage").focus();
+			}
+
+			var dataParam = {
+					"saveplace":saveplace,
+					"storage":storage,
+					"fridgeSeq":fridgeSeq
+				}
+
+ 			$.ajax({
+	            url:'/api/fridge/saveplace/reg',
+	            type:'post',
+	            dataType:'text',
+	            contentType: 'application/json',
+	            data:JSON.stringify(dataParam),
+	            success:function(data){
+	            	alert("보관장소가 등록되었습니다.");
+	            	location.reload();
+	            },error:function(data){
+	            	alert(data.responseText);
+	            }
+	        });	
+		}
+
+		// 보관장소 이름 수정
+		function updateSaveplace(seq){
+			
+			var saveplaceName = $("#saveplaceName"+ seq).val();
+
+			if(!saveplaceName) {
+				alert("보관장소 이름을 입력해주세요.");
+				$("#saveplaceName"+ seq).focus();
+				return;
+			}
+			
+			var dataParam = {
+					"saveplaceSeq":seq,
+					"saveplaceName":saveplaceName
+			}
+			
+		}		
+		
+
+		// 보관장소 삭제
+		function deleteSaveplace(seq){
+
+			//var saveplaceName = document.getElementById('saveplaceName'+ seq).firstChild.nodeValue;	
+			var saveplaceName = $("#saveplaceName"+ seq).val();
+
+			alert(seq);
+			alert(saveplaceName);
+			
+			var dataParam = {"saveplaceSeq" :seq,
+							 "saveplaceName":saveplaceName}
+
+			if(confirm("삭제하시겠습니까?")){
+				 $.ajax({
+					url:'/api/fridge/saveplace/delete',
+					type:'post',
+					dataType:'text',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					success:function(data){
+						alert("삭제되었습니다.");
+						location.reload();
+					},error:function(data){
+						alert(data.responseText);
+					}
+				}); 
+			}else{
+				return;
+			} 	
+		}
 	
+	</script>
 </body>
 
 

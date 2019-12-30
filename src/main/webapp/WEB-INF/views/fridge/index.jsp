@@ -39,27 +39,133 @@
 			<div class="container-fluid">
 
 				<!-- Breadcrumbs-->
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">냉장고1</a>
-					</li>
-					<li class="breadcrumb-item active">Overview</li>
-				</ol>
-				<div class="row">
-					냉장, 냉동
-				</div>
 				
-				<!-- Breadcrumbs-->
+					<c:forEach items="${fridge}" var="fridge" varStatus="fridgeList">
+<%-- 				<c:choose>	
+				
+					<c:when test="${fn:length(fridge) == 0}">
+					냉장고를 먼저 생성해주세요!
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">냉장고를 먼저 생성해주세요!</li>
+						<li class="breadcrumb-item active">Overview</li>
+					</ol>
+					</c:when>
+					
+					<c:otherwise> --%>
+					<ol class="breadcrumb">
+						<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">${fridge.fridge_name}</a>
+						<li class="breadcrumb-item active">Overview</li>
+					</ol>
+					
+					<div>
+						<c:forEach items="${saveplace}" var="saveplace" varStatus="saveplaceList">
+							<c:if test="${saveplace.fridge_seq == fridge.fridge_seq}">
+							<%-- <li>${saveplace.saveplace_name}</li> --%>
+							
+								<!-- Icon Cards-->
+								<div class="row">
+									<c:forEach items="${savefood}" var="savefood" varStatus="savefoodList">
+									<c:if test="${savefood.saveplace_seq == saveplace.saveplace_seq}">
+				                    <div class="col-xl-3 col-sm-6 mb-3">
+										<div class="card text-white bg-danger o-hidden h-100">
+											<div class="card-body">
+												<div class="card-body-icon">
+													<i class="fas fa-fw"></i>
+												</div>
+												<div class="mr-5">${savefood.savefood_name} 외 ${savefood.count-1}건</div>
+											</div>
+											<a class="card-footer text-white clearfix small z-1" href="#">
+												<span class="float-left">자세히 보기</span>
+												<span class="float-right">
+													<i class="fas fa-angle-right"></i>
+												</span>
+											</a>
+										</div>
+									</div>
+									</c:if>
+									</c:forEach>
+								</div>
+								
+							</c:if>
+						</c:forEach>
+					</div>
+<%-- 					</c:otherwise>
+				</c:choose>	 --%>
+					</c:forEach>
+				
+				
+
+	<!-- 			
+				Breadcrumbs
 				<ol class="breadcrumb">
+<<<<<<< HEAD
 					<li class="breadcrumb-item">
-						<a href="#">냉장고2</a>
+						<a href="/view/fridge/fridge?num=2">냉장고2</a>
 					</li>
+=======
+					<li class="breadcrumb-item">냉장고2</li>
+>>>>>>> branch 'master' of https://github.com/kjy48048/savefood.git
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
+
+				Icon Cards
 				<div class="row">
+<<<<<<< HEAD
 					냉장, 냉동
+				</div>					
+=======
+                    <div class="col-xl-3 col-sm-6 mb-3">
+						<div class="card text-white bg-danger o-hidden h-100">
+							<div class="card-body">
+								<div class="card-body-icon">
+									<i class="fas fa-fw"></i>
+								</div>
+								<div class="mr-5">비피더스 외 0건</div>
+							</div>
+							<a class="card-footer text-white clearfix small z-1" href="#">
+								<span class="float-left">자세히 보기</span>
+								<span class="float-right">
+									<i class="fas fa-angle-right"></i>
+								</span>
+							</a>
+						</div>
+					</div>
+					<div class="col-xl-3 col-sm-6 mb-3">
+						<div class="card text-white bg-warning o-hidden h-100">
+							<div class="card-body">
+								<div class="card-body-icon">
+									<i class="fas fa-fw"></i>
+								</div>
+								<div class="mr-5">크림치즈 외 1건</div>
+							</div>
+							<a class="card-footer text-white clearfix small z-1" href="#">
+								<span class="float-left">자세히 보기</span>
+								<span class="float-right">
+									<i class="fas fa-angle-right"></i>
+								</span>
+							</a>
+						</div>
+					</div>
+					<div class="col-xl-3 col-sm-6 mb-3">
+						<div class="card text-white bg-success o-hidden h-100">
+							<div class="card-body">
+								<div class="card-body-icon">
+									<i class="fas fa-fw"></i>
+								</div>
+								<div class="mr-5">참이슬 후레쉬 외 2건</div>
+							</div>
+							<a class="card-footer text-white clearfix small z-1" href="#">
+								<span class="float-left">자세히 보기</span>
+								<span class="float-right">
+									<i class="fas fa-angle-right"></i>
+								</span>
+							</a>
+						</div>
+					</div>
 				</div>
-			
+				 -->
+
+			<input type="button" class="btn btn-primary" onclick="fridgeManage()" value="냉장고관리">
 			</div>
 			<!-- /.container-fluid -->
 			
@@ -78,45 +184,6 @@
 	<a class="scroll-to-top rounded" href="#page-top">
 		<i class="fas fa-angle-up"></i>
 	</a>
-
-	<!-- Saveplace Modal -->
-	<div class="modal fade" id="saveplaceModal">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	      	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	        <span aria-hidden="true">&times;</span></button>
-	      </div>
-	      <div class="modal-body">
-			<div class="form-group">
-				<label for="inputSaveplace">보관장소이름</label>
-				<input type="text" id="inputSaveplace" class="form-control" required>	
-			</div>
-			<div class="form-group">
-				<label for="storage">보관장소분류</label>
-				<select id="storage" class="form-control" required>
-					<c:forEach items="${storage}" var="key" varStatus="status">
-						<c:choose>
-							<c:when test="${status.index == 0 }">
-								<option value="${key.saveplace_storage_code }" selected>${key.saveplace_storage_name }</option>
-							</c:when>
-							<c:otherwise>
-								<option value="${key.saveplace_storage_code }" >${key.saveplace_storage_name }</option>
-							</c:otherwise>
-						</c:choose>	
-					</c:forEach>						
-				</select>
-			</div>	
-	      </div>
-	      <div class="modal-footer"> 
-			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			<input type="submit" class="btn btn-success" id="submit">	      
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-
 
 	<!-- Logout Modal-->
 	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -164,8 +231,8 @@
 		    });
 		}
 
-	 	function showModal() {
-			$("#saveplaceModal").modal();
+	 	function fridgeManage() {
+	 		/* location.href = "/view/fridge/??" */
 		} 
 
 	</script>
