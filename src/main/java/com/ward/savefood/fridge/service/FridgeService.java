@@ -16,8 +16,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
-import com.ward.savefood.admin.model.InsertFoodRequest;
-import com.ward.savefood.admin.model.UpdateFoodRequest;
 import com.ward.savefood.fridge.dao.FridgeDao;
 import com.ward.savefood.fridge.model.InsertSaveplaceRequest;
 import com.ward.savefood.fridge.model.UpdateSaveplaceRequest;
@@ -32,6 +30,26 @@ public class FridgeService {
 	private PlatformTransactionManager transactionManager;
 	
 	private DefaultTransactionDefinition def = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
+
+	public String getMemberSeq(String memberId) {
+		String memberSeq = fridgeDao.getMemberSeq(memberId);
+		return memberSeq;
+	}
+
+	public ArrayList<Map<String, Object>> getFridgeList(String memberSeq) {
+		ArrayList<Map<String, Object>> fridgeList = fridgeDao.getFridgeList(memberSeq);
+		return fridgeList;
+	}
+
+	public ArrayList<Map<String, Object>> getSaveplaceList(int[] fridgeSeqList) {
+		ArrayList<Map<String, Object>> saveplaceList = fridgeDao.getSaveplaceList(fridgeSeqList);
+		return saveplaceList;
+	}
+
+	public ArrayList<Map<String, Object>> getSavefoodList(int[] saveplaceSeqList) {
+		ArrayList<Map<String, Object>> savefoodList = fridgeDao.getSavefoodList(saveplaceSeqList);
+		return savefoodList;
+	}
 	
 	// get storage
 	public List<Map<String, Object>> getStorage() {
@@ -122,5 +140,5 @@ public class FridgeService {
 		
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to delete saveplace", HttpStatus.INTERNAL_SERVER_ERROR);
-	}	
+	}		
 }
