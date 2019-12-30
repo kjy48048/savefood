@@ -38,6 +38,14 @@
 			fridge_seq = #{item}
 			</foreach>
 			AND is_delete = 'N';
+<!-- 			<choose>
+				<when test="fridgeSeqList.size() != 0">
+				AND is_delete = 'N';
+				</when>
+				<otherwise>
+				is_delete = 'N';
+				</otherwise>
+			</choose> -->
 	</select>
 	
 	<select id="getSavefoodList" resultType="java.util.HashMap">

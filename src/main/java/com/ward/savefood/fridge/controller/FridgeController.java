@@ -32,7 +32,7 @@ public class FridgeController {
 			
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
 
-			if(fridge != null) {
+			if(fridge.size() != 0) {
 				int[] fridgeSeqList = new int[fridge.size()];
 				
 				for(int i=0; i<fridge.size(); i++) {
@@ -41,7 +41,7 @@ public class FridgeController {
 				
 				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridgeSeqList);
 				
-				if(saveplace != null) {
+				if(saveplace.size() != 0) {
 					int[] saveplaceSeqList = new int[saveplace.size()];
 					
 					for(int j=0; j<saveplace.size(); j++) {

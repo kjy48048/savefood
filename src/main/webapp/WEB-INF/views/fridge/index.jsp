@@ -39,42 +39,61 @@
 			<div class="container-fluid">
 
 				<!-- Breadcrumbs-->
-				<c:forEach items="${fridge}" var="fridge" varStatus="fridgeList">
-				<ol class="breadcrumb">
-					<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}"">${fridge.fridge_name}</a>
-					<li class="breadcrumb-item active">Overview</li>
-				</ol>
-				<div>
-					<c:forEach items="${saveplace}" var="saveplace" varStatus="saveplaceList">
-						<c:if test="${saveplace.fridge_seq == fridge.fridge_seq}">
-						<%-- <li>${saveplace.saveplace_name}</li> --%>
-							<!-- Icon Cards-->
-							<div class="row">
-								<c:forEach items="${savefood}" var="savefood" varStatus="savefoodList">
-								<c:if test="${savefood.saveplace_seq == saveplace.saveplace_seq}">
-			                    <div class="col-xl-3 col-sm-6 mb-3">
-									<div class="card text-white bg-danger o-hidden h-100">
-										<div class="card-body">
-											<div class="card-body-icon">
-												<i class="fas fa-fw"></i>
+				
+					<c:forEach items="${fridge}" var="fridge" varStatus="fridgeList">
+				<c:choose>	
+				
+					<c:when test="${fn:length(fridge) == 0}">
+					냉장고를 먼저 생성해주세요!
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">냉장고를 먼저 생성해주세요!</li>
+						<li class="breadcrumb-item active">Overview</li>
+					</ol>
+					</c:when>
+					
+					<c:otherwise>
+					<ol class="breadcrumb">
+						<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}"">${fridge.fridge_name}</a>
+						<li class="breadcrumb-item active">Overview</li>
+					</ol>
+					
+					<div>
+						<c:forEach items="${saveplace}" var="saveplace" varStatus="saveplaceList">
+							<c:if test="${saveplace.fridge_seq == fridge.fridge_seq}">
+							<%-- <li>${saveplace.saveplace_name}</li> --%>
+							
+								<!-- Icon Cards-->
+								<div class="row">
+									<c:forEach items="${savefood}" var="savefood" varStatus="savefoodList">
+									<c:if test="${savefood.saveplace_seq == saveplace.saveplace_seq}">
+				                    <div class="col-xl-3 col-sm-6 mb-3">
+										<div class="card text-white bg-danger o-hidden h-100">
+											<div class="card-body">
+												<div class="card-body-icon">
+													<i class="fas fa-fw"></i>
+												</div>
+												<div class="mr-5">${savefood.savefood_name} 외 ${savefood.count-1}건</div>
 											</div>
-											<div class="mr-5">${savefood.savefood_name} 외 ${savefood.count-1}건</div>
+											<a class="card-footer text-white clearfix small z-1" href="#">
+												<span class="float-left">자세히 보기</span>
+												<span class="float-right">
+													<i class="fas fa-angle-right"></i>
+												</span>
+											</a>
 										</div>
-										<a class="card-footer text-white clearfix small z-1" href="#">
-											<span class="float-left">자세히 보기</span>
-											<span class="float-right">
-												<i class="fas fa-angle-right"></i>
-											</span>
-										</a>
 									</div>
+									</c:if>
+									</c:forEach>
 								</div>
-								</c:if>
-								</c:forEach>
-							</div>
-						</c:if>
+								
+							</c:if>
+						</c:forEach>
+					</div>
+					</c:otherwise>
+				</c:choose>	
 					</c:forEach>
-				</div>
-				</c:forEach>
+				
+				
 
 	<!-- 			
 				Breadcrumbs
