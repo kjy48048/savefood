@@ -53,7 +53,7 @@
 					
 					<c:otherwise>
 					<ol class="breadcrumb">
-						<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}"">${fridge.fridge_name}</a>
+						<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">${fridge.fridge_name}</a>
 						<li class="breadcrumb-item active">Overview</li>
 					</ol>
 					
