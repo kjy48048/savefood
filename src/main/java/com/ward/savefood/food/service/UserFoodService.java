@@ -43,8 +43,44 @@ public class UserFoodService {
 
 			Map<String, Object> selectFood = new HashMap<>();
 			selectFood.put("categorySeq", foodRequest.getCategorySeq());
-			selectFood.put("searchText", foodRequest.getSearchText());
 			ArrayList<Map<String, Object>> selectResult = foodDao.getFoodList(selectFood);
+			
+			if(selectResult.size() > 0) {
+				ArrayList<Map<String, Object>> foodList = new ArrayList<>();
+				ArrayList<ArrayList<Map<String, Object>>> foodListList = new ArrayList<>();
+				
+				for(int i = 0; i<selectResult.size(); i++) {
+					if(i == selectResult.size()-1 || selectResult.get(i).get("category_seq") != selectResult.get(i+1).get("category_seq"))
+					{
+						foodList.add(selectResult.get(i));
+						@SuppressWarnings("unchecked")
+						ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) foodList.clone();
+						foodListList.add(temp);
+						foodList.clear();
+					}
+					else {
+						foodList.add(selectResult.get(i));
+					}
+				}
+				
+				return new ResponseEntity<>(foodListList, HttpStatus.OK);
+			}
+			
+			return new ResponseEntity<>("no select result", HttpStatus.NO_CONTENT);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return new ResponseEntity<>("fail to select food list", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<?> searchFoodList(SelectFoodRequest foodRequest) {	
+		try {	
+
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("searchText", foodRequest.getSearchText());
+			ArrayList<Map<String, Object>> selectResult = foodDao.searchFoodList(selectFood);
 			
 			if(selectResult.size() > 0) {
 				ArrayList<Map<String, Object>> foodList = new ArrayList<>();

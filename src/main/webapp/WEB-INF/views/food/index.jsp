@@ -77,17 +77,17 @@
 					</div>
 					<div class="search-utility utility">
 						<input class="utility-item" type="text" id="search-text" placeholder="검색"/>
-						<input type="button" class="search-btn utility-item"/>
+						<input type="button" id="search-btn" class="utility-item"/>
 					</div>
 				</div>
 			
 				<div class="category-container">
 					<div class="item-wrapper">
-						<a class="category-item" href="#" data-category-seq="0">전체</a>
+						<a class="category-item" href="#" data-category-seq="0" style="color:orange;">전체</a>
 					</div>
 					<c:forEach items="${categoryList}" varStatus="status" var="category">
-						<div class="item-wrapper" onclick="foodReload()">
-							<a class="category-item" href="#"  data-category-seq="${category.category_seq}">${category.category_name}</a>
+						<div class="item-wrapper">
+							<a class="category-item" href="#" data-category-seq="${category.category_seq}">${category.category_name}</a>
 						</div>
 					</c:forEach>
 				</div>
@@ -98,7 +98,7 @@
 							<h5>${foodList[0].category_name }</h5>
 							<div class="food-wrapper">
 								<c:forEach items="${foodList}" var="food">
-									<div class="food">
+									<div class="food" data-food-seq="${food.food_seq}">
 										<img src="${pageContext.request.contextPath}${food.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'"/> 
 										<span>${food.food_name }</span>
 									</div>
@@ -159,6 +159,81 @@
 	<script src="../../static/js/sb-admin.min.js"></script>
 
 	<script>
+
+		$(".category-item").on("click", function(e){
+				e.preventDefault();
+				var categorySeq = $(e.target).get(0).dataset.categorySeq;
+				selectCategory(categorySeq);
+				$(".category-item").removeAttr("style");
+				$(e.target).attr("style","color:orange;");
+			});
+		
+		function selectCategory(categorySeq) {
+				var dataParam = {
+						"categorySeq":categorySeq
+						};
+				
+				$.ajax({
+			        url:'/api/food/list',
+			        type:'post',
+			        dataType:'json',
+			        contentType: 'application/json',
+			        data:JSON.stringify(dataParam),
+			        success:function(data,textStatus,jqXHR){
+			        	 if(jqXHR.status == "204"){
+			        		 	$(".food-container *").remove();
+			        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
+				            }
+			            else{
+			            		appendFoodList(data);
+				            }
+			        },error:function(data){
+			        	alert(data.responseText);
+			        }
+			    });
+			}
+		
+		$("#search-text").on("keydown", function(e){
+			if(e.keyCode == 13){
+				var searchText = $(e.target).val();
+				searchFood(searchText);
+				$(".category-item").removeAttr("style");
+			}
+		});
+
+		$("#search-btn").on("click", function(e){
+			e.preventDefault();
+			var searchText = $("#search-text").val();
+			searchFood(searchText);
+			$(".category-item").removeAttr("style");
+		});
+		
+		
+		function searchFood(searchText) {
+			var dataParam = {
+					"searchText":searchText
+					};
+			
+			$.ajax({
+		        url:'/api/food/search',
+		        type:'post',
+		        dataType:'json',
+		        contentType: 'application/json',
+		        data:JSON.stringify(dataParam),
+		        success:function(data,textStatus,jqXHR){
+		        	 if(jqXHR.status == "204"){
+		        		 	$(".food-container *").remove();
+		        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
+			            }
+		            else{
+			            	appendFoodList(data);
+			            }
+		        },error:function(data){
+		        	alert(data.responseText);
+		        }
+		    });
+		}
+		
 		function logout() {
 			$.ajax({
 		        url:'/api/member/logout',
@@ -172,6 +247,25 @@
 		        }
 		    });
 		}
+
+		function appendFoodList(data){
+				$(".food-container *").remove();
+	    		var textHtml = "";
+				$.each(data, function(i, foodList){
+					textHtml += '<div class="food-list">';
+					textHtml += '<h5>'+ foodList[0].category_name + '</h5>';
+					textHtml += '<div class="food-wrapper">';
+					$.each(foodList, function(j, food){
+						textHtml += '<div class="food" data-food-seq="'+ food.food_seq +'">';
+						textHtml +=	'<img src="${pageContext.request.contextPath}'+food.food_img+'" onerror="this.src=\'${pageContext.request.contextPath}/resources/img/not-found.png\'"/>'; 
+						textHtml +=	'<span>'+food.food_name+'</span>';
+						textHtml +=	'</div>'
+					})
+					textHtml+= '</div>';
+					textHtml+= '</div>';
+				})
+				$(".food-container").append(textHtml);
+			}
 
 	 	function showModal() {
 			$("#saveplaceModal").modal();

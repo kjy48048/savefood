@@ -41,4 +41,14 @@ public class UserFoodRestController extends GeneralController {
 		return foodService.getFoodList(foodRequest);
 	}
 	
+	@PostMapping("/search")
+	public ResponseEntity<?> searchFoodList(@Valid @RequestBody SelectFoodRequest foodRequest, BindingResult bindingResult, HttpServletRequest request) {
+		logger.info("userFoodRestController searchFoodList : "+ foodRequest.toString());
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return foodService.searchFoodList(foodRequest);
+	}
 }

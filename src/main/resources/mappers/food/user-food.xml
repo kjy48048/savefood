@@ -12,6 +12,26 @@
 	<update id="deleteUserFood" parameterType="java.util.HashMap">
 	</update>
 	
+	<select id="searchFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT * FROM (SELECT
+			a.food_seq,
+			a.food_name,
+            a.food_expi_date,
+            a.food_img,
+            a.category_seq,
+            b.category_name
+		FROM food a
+		LEFT JOIN category b ON a.category_seq = b.category_seq
+		WHERE
+			a.is_delete = 'N') c
+		WHERE
+			<if test="searchText != null">
+			c.category_name REGEXP #{searchText}
+			OR c.food_name REGEXP #{searchText}
+			</if>
+		ORDER BY c.category_seq, c.food_name;
+	</select>
+	
 	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			a.food_seq,
@@ -23,11 +43,12 @@
 		FROM food a
 		LEFT JOIN category b ON a.category_seq = b.category_seq
 		WHERE
-			<if test="categorySeq != 0">
-				a.category_seq = #{categorySeq}
-			</if>
-			AND a.is_delete = 'N'
-		ORDER BY food_name;
+		<if test="categorySeq != 0">
+			a.category_seq = #{categorySeq}
+		AND
+		</if>
+			a.is_delete = 'N'
+		ORDER BY category_seq, food_name;
 	</select>
 	
 	<select id="getAllFoodList" parameterType="String" resultType="java.util.HashMap">

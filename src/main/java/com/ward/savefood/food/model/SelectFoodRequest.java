@@ -3,14 +3,14 @@ package com.ward.savefood.food.model;
 
 public class SelectFoodRequest {
 	
-	private String categorySeq;
+	private int categorySeq;
 	private String searchText;
 
-	public String getCategorySeq() {
+	public int getCategorySeq() {
 		return categorySeq;
 	}
 
-	public void setCategorySeq(String categorySeq) {
+	public void setCategorySeq(int categorySeq) {
 		this.categorySeq = categorySeq;
 	}
 	
