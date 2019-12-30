@@ -10589,7 +10589,7 @@ body {
   overflow-x: hidden;
   width: 100%;
   padding-top: 1rem;
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 }
 
 .scroll-to-top {
@@ -10898,7 +10898,7 @@ footer.sticky-footer {
   right: 0;
   bottom: 0;
   width: calc(100% - 90px);
-  height: 80px;
+  height: 40px;
   background-color: #e9ecef;
 }
 

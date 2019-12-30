@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.ward.savefood.food.dao.UserFoodDao">
+ 
+	<insert id="insertUserFood" useGeneratedKeys="true" keyProperty="foodSeq">
+	</insert>
+	 
+	<update id="updateUserFood" parameterType="java.util.HashMap">
+	</update>
+	
+	<update id="deleteUserFood" parameterType="java.util.HashMap">
+	</update>
+	
+	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			a.food_seq,
+			a.food_name,
+            a.food_expi_date,
+            a.food_img,
+            a.category_seq,
+            b.category_name
+		FROM food a
+		LEFT JOIN category b ON a.category_seq = b.category_seq
+		WHERE
+			a.category_seq = #{categorySeq}
+			AND a.is_delete = 'N'
+		ORDER BY food_name;
+	</select>
+	
+	<select id="getAllFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			food.food_seq,
+			food.food_name,
+            food.food_expi_date,
+            food.food_img,
+            category.category_seq,
+            category.category_name
+		FROM food as food
+		LEFT JOIN category as category ON food.category_seq = category.category_seq
+		WHERE food.is_delete = 'N'
+		ORDER BY category.category_seq, food.food_name;
+	</select>
+	
+</mapper>

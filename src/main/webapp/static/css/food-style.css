@@ -1,0 +1,160 @@
+@charset "UTF-8";
+#content-wrapper {
+	padding-bottom: 40px;
+}
+
+.container-fluid {
+	height: 100%;
+}
+
+.category-container {
+	display: flex;
+	font-weight: bold;
+	border: solid grey 2px;
+	border-radius: 5px;
+	padding: 5px;
+	flex-wrap: wrap;
+}
+
+.item-wrapper {
+	margin: 0px auto;
+	padding: 5px;
+}
+
+.category-item {
+	color: black;
+}
+
+.utility-container{
+	display:flex;
+	margin-bottom: 10px;
+}
+
+
+.utility {
+	display: flex;
+ 	align-items: center;
+  	justify-content: center;
+	height: 40px;
+}
+
+.utility-item{
+	align-self: center;
+	margin: 0;
+}
+
+.auto-reg-utility {
+	justify-content: flex-start;
+	flex-grow: 3;
+}
+
+.search-utility {
+	justify-content: flex-end;
+	flex-grow: 1;
+}
+
+.search-btn	{
+	background: url(/resources/img/search-glass.png) no-repeat center;
+	width: 30px;
+	height: 30px;
+	border: 1px grey solid;
+}
+
+.food-container {
+	position: relative;
+	display: block;
+	margin-top: 10px;
+	top: 0px;
+	font-weight: bold;
+	min-height: 400px;
+	max-height: 1200px;
+	border: solid grey 2px;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: 20px;
+	overflow: auto;
+} 
+
+.food-list{
+	margin: 8px 8px 0px 8px;
+	
+}
+
+.food-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.food {
+	display:inline-block;
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-bottom: 8px;
+}
+
+.food img {
+	width: 50px;
+	height: 50px;
+}
+
+.food span {
+	display:block;
+	width: 50px;
+	text-align: center;
+	vertical-align: middle;
+	text-overflow: clip;
+	font-size: 10px;
+}
+
+#check-auto-reg {
+	display:none;
+}
+
+#check-auto-reg + label{
+	display:flex;
+	align-items: center;
+  	justify-content: center;
+	width: 100px;
+}
+
+#check-auto-reg + label a{
+	display:block;
+	width: 30px;
+	height: 30px;
+	background: url(/resources/img/check-box.png) no-repeat;
+}
+
+#check-auto-reg:checked + label a{
+	display:block;
+	width: 30px;
+	height: 30px;
+	background: url(/resources/img/check-box.png) no-repeat -30px;
+	
+}
+
+#check-auto-reg + label span{
+	margin-left: 5px;
+}
+
+#search-text{
+	padding-left: 5px;
+}
+
+#fridge-list{
+	margin-left: 10px;
+	max-width: 40%;
+	height: 30px;
+}
+
+#fridge-list{
+	margin-left: 10px;
+	max-width: 30%;
+	height: 30px;
+}
+
+#saveplace-list{
+	margin-left: 5px;
+	max-width: 30%;
+	height: 30px;
+}
+
