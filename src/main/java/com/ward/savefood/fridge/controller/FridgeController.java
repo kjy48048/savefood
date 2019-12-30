@@ -1,5 +1,6 @@
 package com.ward.savefood.fridge.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +23,38 @@ public class FridgeController {
 	private FridgeService fridgeService;
 	
 	@GetMapping("")
-	public String index(Model model, HttpSession session) throws Exception {
+	public String briefFridge(Model model, HttpSession session) throws Exception {
 		if(session.getAttribute("loginInfo") != null) {
+
+			String memberId = session.getAttribute("loginInfo").toString();
+			String memberSeq = fridgeService.getMemberSeq(memberId);
 			
+			
+			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
+
+			if(fridge.size() != 0) {
+				int[] fridgeSeqList = new int[fridge.size()];
+				
+				for(int i=0; i<fridge.size(); i++) {
+					fridgeSeqList[i] = (Integer) fridge.get(i).get("fridge_seq");
+				}
+				
+				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridgeSeqList);
+				
+				if(saveplace.size() != 0) {
+					int[] saveplaceSeqList = new int[saveplace.size()];
+					
+					for(int j=0; j<saveplace.size(); j++) {
+						saveplaceSeqList[j] = (Integer) saveplace.get(j).get("saveplace_seq");
+					}
+					
+					model.addAttribute("fridge", fridge);
+					model.addAttribute("saveplace", saveplace);
+					model.addAttribute("savefood", fridgeService.getSavefoodList(saveplaceSeqList));
+				}
+
+			}
+
 			return "fridge/index";
 		}
 		

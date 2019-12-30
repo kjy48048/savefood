@@ -40,6 +40,17 @@ public class FridgeRestController extends GeneralController {
 		return fridgeService.insertSaveplace(saveplaceRequest);
 	}
 	
+	@PostMapping("/saveplace/update")
+	public ResponseEntity<?> updateSaveplace(@Valid @RequestBody UpdateSaveplaceRequest saveplaceRequest, BindingResult bindingResult){
+		logger.info("FridgeRestController updateSaveplace  : " + saveplaceRequest.toString());
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return fridgeService.updateSaveplace(saveplaceRequest);
+	}
+	
 	@PostMapping("/saveplace/delete")
 	public ResponseEntity<?> deleteSaveplace(@Valid @RequestBody UpdateSaveplaceRequest saveplaceRequest, BindingResult bindingResult){
 		logger.info("FridgeRestController deleteSaveplace  : "+ saveplaceRequest.toString());

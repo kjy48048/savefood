@@ -222,13 +222,16 @@
 						<a href="#">
 							<input id="saveplaceName${saveplace.saveplace_seq}" type="text"
 								style="border:0px; background-color: transparent;" 
-								value="${saveplace.saveplace_name}" disabled>
+								value="${saveplace.saveplace_name}" disabled/>
 						</a>	
 					</li>
-					<li class="breadcrumb-item active">
-						<i class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
-						<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
-					</li>
+					<ul class="navbar-nav ml-auto mr-md-0">
+						<li class="breadcrumb-item active">
+							<i id="saveplaceEdit${saveplace.saveplace_seq}"
+								class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
+							<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
+						</li>
+					</ul>
 					
 				</ol>
 				</c:forEach>					
@@ -366,12 +369,11 @@
 			$("#saveplaceModal").modal();
 		} 
 
-	 // 보관장소 등록 처리
+		// 보관장소 등록 처리
 		function regSaveplace() {
 			var saveplace = $("#inputSaveplace").val();
 			var storage = $("#comboStorage").val();	
-			//var fridgeSeq = "${fridgeSeq}";
-			var fridgeSeq = 1;	
+			var fridgeSeq = "${fridgeSeq}";
 
 			alert(saveplace);
 			alert(storage);
@@ -411,7 +413,7 @@
 		function updateSaveplace(seq){
 			
 			var saveplaceName = $("#saveplaceName"+ seq).val();
-
+			
 			if(!saveplaceName) {
 				alert("보관장소 이름을 입력해주세요.");
 				$("#saveplaceName"+ seq).focus();
@@ -422,8 +424,38 @@
 					"saveplaceSeq":seq,
 					"saveplaceName":saveplaceName
 			}
-			
-		}		
+
+			var inputSaveplaceName = $("#saveplaceName"+ seq);
+			var editIcon = $("#saveplaceEdit"+ seq);
+			var editClassName = editIcon.attr("class");
+
+			if(editClassName == "far fa-edit"){
+	 			inputSaveplaceName.removeAttr("disabled");
+				inputSaveplaceName.attr("style", "border:1px;"); 
+
+				editIcon.attr("class", "fas fa-edit");
+				
+			} else {
+				 $.ajax({
+					url:'/api/fridge/saveplace/update',
+					type:'post',
+					dataType:'json',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					success:function(data){
+						alert("수정이 완료되었습니다.");
+					},error:function(data){
+						alert(data.responseText);
+					}
+				}); 
+
+				inputSaveplaceName.attr("style", "border:0px; background-color: transparent;"); 
+	 			inputSaveplaceName.attr("disabled", "disabled");
+
+ 				editIcon.attr("class", "far fa-edit");
+ 				//fa-check-circle
+			}
+		}			
 		
 
 		// 보관장소 삭제
