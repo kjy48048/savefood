@@ -41,7 +41,8 @@
 				<!-- Breadcrumbs-->
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
-						<a href="#">냉장고1</a>
+						<a href="/view/fridge/fridge?num=1">냉장고1</a>
+					<!-- <a href="/view/fridge/fridge?num=${fridge.fridge_seq}">${fridge.fridge_name}</a> -->	
 					</li>
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
@@ -52,14 +53,13 @@
 				<!-- Breadcrumbs-->
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
-						<a href="#">냉장고2</a>
+						<a href="/view/fridge/fridge?num=2">냉장고2</a>
 					</li>
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 				<div class="row">
 					냉장, 냉동
-				</div>
-			
+				</div>					
 			</div>
 			<!-- /.container-fluid -->
 			
