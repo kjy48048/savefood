@@ -23,7 +23,9 @@
 		FROM food a
 		LEFT JOIN category b ON a.category_seq = b.category_seq
 		WHERE
-			a.category_seq = #{categorySeq}
+			<if test="categorySeq != 0">
+				a.category_seq = #{categorySeq}
+			</if>
 			AND a.is_delete = 'N'
 		ORDER BY food_name;
 	</select>

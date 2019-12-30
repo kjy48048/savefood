@@ -18,7 +18,7 @@ import com.ward.savefood.food.service.UserFoodService;
 
 @Controller
 @RequestMapping("/view/food")
-public class FoodController {
+public class UserFoodController {
 	
 	@Autowired
 	private CategoryService categoryService;

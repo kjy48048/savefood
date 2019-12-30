@@ -25,14 +25,12 @@ import com.ward.savefood.admin.service.CustomerService;;
 
 @RestController
 @RequestMapping("/api/food")
-public class FoodRestController extends GeneralController {
+public class UserFoodRestController extends GeneralController {
 	
-	@Autowired
-	private CategoryService categoryService;
 	@Autowired
 	private UserFoodService foodService;
 	
-	@PostMapping("/food")
+	@PostMapping("/list")
 	public ResponseEntity<?> getFoodList(@Valid @RequestBody SelectFoodRequest foodRequest, BindingResult bindingResult, HttpServletRequest request) {
 		logger.info("userFoodRestController getFoodList : "+ foodRequest.toString());
 		
