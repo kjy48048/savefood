@@ -1,10 +1,7 @@
 package com.ward.savefood.fridge.controller;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-import java.util.HashMap;
-=======
->>>>>>> parent of 072fec5... Merge branch 'master' of https://github.com/kjy48048/savefood.git
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,21 +23,12 @@ public class FridgeController {
 	private FridgeService fridgeService;
 	
 	@GetMapping("")
-<<<<<<< HEAD
 	public String briefFridge(Model model, HttpSession session) throws Exception {
 		if(session.getAttribute("loginInfo") != null) {
 
 			String memberId = session.getAttribute("loginInfo").toString();
 			String memberSeq = fridgeService.getMemberSeq(memberId);
 			
-			
-=======
-	public String index(Model model, HttpSession session) throws Exception {
-		if(session.getAttribute("loginInfo") != null) {
-			String memberId = session.getAttribute("loginInfo").toString();
-			String memberSeq = fridgeService.getMemberSeq(memberId);
-
->>>>>>> parent of 072fec5... Merge branch 'master' of https://github.com/kjy48048/savefood.git
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
 
 			if(fridge.size() != 0) {
@@ -49,7 +37,6 @@ public class FridgeController {
 				for(int i=0; i<fridge.size(); i++) {
 					fridgeSeqList[i] = (Integer) fridge.get(i).get("fridge_seq");
 				}
-<<<<<<< HEAD
 				
 				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridgeSeqList);
 				
@@ -67,22 +54,6 @@ public class FridgeController {
 
 			}
 
-=======
-						            
-				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridgeSeqList);
-						            
-				if(saveplace.size() != 0) {
-					int[] saveplaceSeqList = new int[saveplace.size()];
-					for(int j=0; j<saveplace.size(); j++) {
-						saveplaceSeqList[j] = (Integer) saveplace.get(j).get("saveplace_seq");
-					}
-				
-					model.addAttribute("fridge", fridge);
-					model.addAttribute("saveplace", saveplace);
-					model.addAttribute("savefood", fridgeService.getSavefoodList(saveplaceSeqList));
-				}			
-			}
->>>>>>> parent of 072fec5... Merge branch 'master' of https://github.com/kjy48048/savefood.git
 			return "fridge/index";
 		}
 		
@@ -134,7 +105,6 @@ public class FridgeController {
 //		
 //		return "member/join";
 //	}
-<<<<<<< HEAD
 	
 	@GetMapping("/management")
 	public String management(Model model, HttpServletRequest request, HttpSession session) throws Exception {
@@ -151,6 +121,4 @@ public class FridgeController {
 		
 		return "redirect:/view/member/login";
 	}
-=======
->>>>>>> parent of 072fec5... Merge branch 'master' of https://github.com/kjy48048/savefood.git
 }
