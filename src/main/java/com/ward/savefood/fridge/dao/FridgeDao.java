@@ -18,6 +18,7 @@ public interface FridgeDao {
 	
 	ArrayList<Map<String, Object>> getSaveplaceList(String fridgeSeq);
 	int insertSaveplace(Map<String, Object> insertSaveplace);
+	int updateSaveplace(Map<String, Object> updateSaveplace);
 	int deleteSaveplace(Map<String, Object> deleteSaveplace);
 
 }

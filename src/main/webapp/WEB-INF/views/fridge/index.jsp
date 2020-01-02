@@ -41,7 +41,7 @@
 				<!-- Breadcrumbs-->
 				
 					<c:forEach items="${fridge}" var="fridge" varStatus="fridgeList">
-<%-- 				<c:choose>	
+				<c:choose>	
 				
 					<c:when test="${fn:length(fridge) == 0}">
 					냉장고를 먼저 생성해주세요!
@@ -51,7 +51,7 @@
 					</ol>
 					</c:when>
 					
-					<c:otherwise> --%>
+					<c:otherwise>
 					<ol class="breadcrumb">
 						<a class="breadcrumb-item" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">${fridge.fridge_name}</a>
 						<li class="breadcrumb-item active">Overview</li>
@@ -89,8 +89,8 @@
 							</c:if>
 						</c:forEach>
 					</div>
-<%-- 					</c:otherwise>
-				</c:choose>	 --%>
+					</c:otherwise>
+				</c:choose>	
 					</c:forEach>
 				
 				

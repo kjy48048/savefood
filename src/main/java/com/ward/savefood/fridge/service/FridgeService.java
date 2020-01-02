@@ -114,6 +114,36 @@ public class FridgeService {
 		return new ResponseEntity<>("fail to regist savepalce", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	// update saveplace
+	public ResponseEntity<?> updateSaveplace(UpdateSaveplaceRequest updateSaveplaceRequest) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {	
+			String saveplaceName = updateSaveplaceRequest.getSaveplaceName();
+			int saveplaceSeq = updateSaveplaceRequest.getSaveplaceSeq();
+			
+			if(StringUtils.isEmpty(saveplaceName) || saveplaceSeq == 0) {
+				return new ResponseEntity<>("no saveplace info", HttpStatus.NO_CONTENT);
+			}
+			
+			Map<String, Object> saveplace = new HashMap<String, Object>();
+			saveplace.put("saveplaceSeq", updateSaveplaceRequest.getSaveplaceSeq());
+			saveplace.put("saveplaceName", updateSaveplaceRequest.getSaveplaceName());
+			int updateResult = fridgeDao.updateSaveplace(saveplace);				
+			
+			if(updateResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>(saveplace, HttpStatus.OK);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to update saveplace", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	
 	// delete saveplace
 	public ResponseEntity<?> deleteSaveplace(UpdateSaveplaceRequest updateSaveplaceRequest) {

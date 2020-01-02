@@ -21,7 +21,6 @@
 
 	<!-- Custom styles for this template-->
 	<link href="../../static/css/sb-admin.css" rel="stylesheet">
-	<link href="../../static/css/food-style.css" rel="stylesheet">
 
 </head>
 
@@ -36,78 +35,12 @@
 		<jsp:include page="../common/sidebar.jsp"/>
 
 		<div id="content-wrapper">
-			
+식품목록 나올것임
 			<div class="container-fluid">
-	
-				<!-- Breadcrumbs-->
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<i>식품등록</i>
-					</li>
-				</ol>
-			
-				<div class="utility-container">
-					<div class="auto-reg-utility utility">
-						<input class="utility-item" type="checkbox" id="check-auto-reg" checked="checked">
-						<label class="utility-item" for="check-auto-reg"><a></a><span>자동등록</span></label>
-						<select class="utility-item" id="fridge-list">
-							<c:forEach items="${fridgeList}" var="fridge" varStatus="status">
-								<c:choose>
-									<c:when test="${status.count == 1}">
-										<option value="${fridge.fridge_seq}" selected>${fridge.fridge_name}</option>									
-									</c:when>
-									<c:otherwise>
-										<option value="${fridge.fridge_seq}">${fridge.fridge_name}</option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</select>
-						<select class="utility-item" id="saveplace-list">
-							<c:forEach items="${saveplaceList}" var="saveplace" varStatus="status">
-								<c:choose>
-									<c:when test="${status.count == 1}">
-										<option value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
-									</c:when>
-									<c:otherwise>
-										<option value="${saveplace.saveplace_seq}">${saveplace.saveplace_seq}</option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</select>
-					</div>
-					<div class="search-utility utility">
-						<input class="utility-item" type="text" id="search-text" placeholder="검색"/>
-						<input type="button" id="search-btn" class="utility-item"/>
-					</div>
-				</div>
-			
-				<div class="category-container">
-					<div class="item-wrapper">
-						<a class="category-item" href="#" data-category-seq="0" style="color:orange;">전체</a>
-					</div>
-					<c:forEach items="${categoryList}" varStatus="status" var="category">
-						<div class="item-wrapper">
-							<a class="category-item" href="#" data-category-seq="${category.category_seq}">${category.category_name}</a>
-						</div>
-					</c:forEach>
-				</div>
-				
-				<div class="food-container" >
-					<c:forEach items="${foodListList}" var="foodList" varStatus="status">
-						<div class="food-list">
-							<h5>${foodList[0].category_name }</h5>
-							<div class="food-wrapper">
-								<c:forEach items="${foodList}" var="food">
-									<div class="food" data-food-seq="${food.food_seq}">
-										<img src="${pageContext.request.contextPath}${food.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'"/> 
-										<span>${food.food_name }</span>
-									</div>
-								</c:forEach>
-							</div>
-						</div>
-					</c:forEach>
-				</div>
+
 			</div>
+
+
 			<!-- Sticky Footer 영역 -->
 			<jsp:include page="../common/footer.jsp"/>
 
@@ -124,6 +57,41 @@
 	</a>
 
 	<!-- Saveplace Modal -->
+	<div class="modal fade" id="saveplaceModal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	      	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	        <span aria-hidden="true">&times;</span></button>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label for="inputSaveplace">보관장소이름</label>
+				<input type="text" id="inputSaveplace" class="form-control" required>	
+			</div>
+			<div class="form-group">
+				<label for="storage">보관장소분류</label>
+				<select id="storage" class="form-control" required>
+					<c:forEach items="${storage}" var="key" varStatus="status">
+						<c:choose>
+							<c:when test="${status.index == 0 }">
+								<option value="${key.saveplace_storage_code }" selected>${key.saveplace_storage_name }</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${key.saveplace_storage_code }" >${key.saveplace_storage_name }</option>
+							</c:otherwise>
+						</c:choose>	
+					</c:forEach>						
+				</select>
+			</div>	
+	      </div>
+	      <div class="modal-footer"> 
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<input type="submit" class="btn btn-success" id="submit">	      
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 
 
@@ -159,81 +127,6 @@
 	<script src="../../static/js/sb-admin.min.js"></script>
 
 	<script>
-
-		$(".category-item").on("click", function(e){
-				e.preventDefault();
-				var categorySeq = $(e.target).get(0).dataset.categorySeq;
-				selectCategory(categorySeq);
-				$(".category-item").removeAttr("style");
-				$(e.target).attr("style","color:orange;");
-			});
-		
-		function selectCategory(categorySeq) {
-				var dataParam = {
-						"categorySeq":categorySeq
-						};
-				
-				$.ajax({
-			        url:'/api/food/list',
-			        type:'post',
-			        dataType:'json',
-			        contentType: 'application/json',
-			        data:JSON.stringify(dataParam),
-			        success:function(data,textStatus,jqXHR){
-			        	 if(jqXHR.status == "204"){
-			        		 	$(".food-container *").remove();
-			        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
-				            }
-			            else{
-			            		appendFoodList(data);
-				            }
-			        },error:function(data){
-			        	alert(data.responseText);
-			        }
-			    });
-			}
-		
-		$("#search-text").on("keydown", function(e){
-			if(e.keyCode == 13){
-				var searchText = $(e.target).val();
-				searchFood(searchText);
-				$(".category-item").removeAttr("style");
-			}
-		});
-
-		$("#search-btn").on("click", function(e){
-			e.preventDefault();
-			var searchText = $("#search-text").val();
-			searchFood(searchText);
-			$(".category-item").removeAttr("style");
-		});
-		
-		
-		function searchFood(searchText) {
-			var dataParam = {
-					"searchText":searchText
-					};
-			
-			$.ajax({
-		        url:'/api/food/search',
-		        type:'post',
-		        dataType:'json',
-		        contentType: 'application/json',
-		        data:JSON.stringify(dataParam),
-		        success:function(data,textStatus,jqXHR){
-		        	 if(jqXHR.status == "204"){
-		        		 	$(".food-container *").remove();
-		        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
-			            }
-		            else{
-			            	appendFoodList(data);
-			            }
-		        },error:function(data){
-		        	alert(data.responseText);
-		        }
-		    });
-		}
-		
 		function logout() {
 			$.ajax({
 		        url:'/api/member/logout',
@@ -247,25 +140,6 @@
 		        }
 		    });
 		}
-
-		function appendFoodList(data){
-				$(".food-container *").remove();
-	    		var textHtml = "";
-				$.each(data, function(i, foodList){
-					textHtml += '<div class="food-list">';
-					textHtml += '<h5>'+ foodList[0].category_name + '</h5>';
-					textHtml += '<div class="food-wrapper">';
-					$.each(foodList, function(j, food){
-						textHtml += '<div class="food" data-food-seq="'+ food.food_seq +'">';
-						textHtml +=	'<img src="${pageContext.request.contextPath}'+food.food_img+'" onerror="this.src=\'${pageContext.request.contextPath}/resources/img/not-found.png\'"/>'; 
-						textHtml +=	'<span>'+food.food_name+'</span>';
-						textHtml +=	'</div>'
-					})
-					textHtml+= '</div>';
-					textHtml+= '</div>';
-				})
-				$(".food-container").append(textHtml);
-			}
 
 	 	function showModal() {
 			$("#saveplaceModal").modal();

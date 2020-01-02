@@ -77,6 +77,16 @@
 		VALUES
 			(#{fridgeSeq}, #{saveplace}, #{storage}, now());
 	</insert>	
+
+	<update id="updateSaveplace" parameterType="java.util.HashMap">
+		UPDATE
+			saveplace
+		SET
+			saveplace_name = #{saveplaceName},
+			modify_date = now()
+		WHERE
+			saveplace_seq = #{saveplaceSeq};
+	</update>	
 	
 	<update id="deleteSaveplace" parameterType="java.util.HashMap">
 		UPDATE
