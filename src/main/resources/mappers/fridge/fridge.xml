@@ -20,23 +20,26 @@
 	</select>
 	
 	<select id="getFridgeList" resultType="java.util.HashMap">
-		SELECT fridge_seq, fridge_name
+		SELECT fridge_seq, fridge_name, fridge_ord
 		FROM
 			fridge
 		WHERE 
 			member_seq = #{memberSeq}
-			AND is_delete = 'N';
+			AND is_delete = 'N'
+		ORDER BY fridge_ord;
 	</select>
 	
 	<select id="getSaveplace" resultType="java.util.HashMap">
-		SELECT saveplace_seq, fridge_seq, saveplace_name
+		SELECT a.saveplace_seq, a.fridge_seq, a.saveplace_name, b.fridge_ord
 		FROM
-			saveplace
+			saveplace a
+		LEFT JOIN fridge b ON a.fridge_seq = b.fridge_seq
 		WHERE
 			<foreach collection="fridgeSeqList" item="item" separator="or" index="index">
-			fridge_seq = #{item}
+			a.fridge_seq = #{item}
 			</foreach>
-			AND is_delete = 'N';
+			AND a.is_delete = 'N'
+			ORDER BY b.fridge_ord;
 <!-- 			<choose>
 				<when test="fridgeSeqList.size() != 0">
 				AND is_delete = 'N';

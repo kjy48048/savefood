@@ -3,7 +3,12 @@
  
 <mapper namespace="com.ward.savefood.food.dao.UserFoodDao">
  
-	<insert id="insertUserFood" useGeneratedKeys="true" keyProperty="foodSeq">
+	<insert id="insertUserFood" useGeneratedKeys="true" keyProperty="saveFoodSeq" parameterType="java.util.HashMap">
+		INSERT
+			savefood ( food_seq, saveplace_seq, member_seq, savefood_name, savefood_quantity, savefood_expi_date, insert_date, is_delete)
+		VALUES
+			(#{foodSeq}, #{saveplaceSeq}, #{memberSeq}, #{savefoodName}, #{savefoodQuantity}, #{savefoodExpiDate}, now(), 'N');
+	
 	</insert>
 	 
 	<update id="updateUserFood" parameterType="java.util.HashMap">
@@ -12,8 +17,8 @@
 	<update id="deleteUserFood" parameterType="java.util.HashMap">
 	</update>
 	
-	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
-		SELECT
+	<select id="searchFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT * FROM (SELECT
 			a.food_seq,
 			a.food_name,
             a.food_expi_date,
@@ -23,11 +28,46 @@
 		FROM food a
 		LEFT JOIN category b ON a.category_seq = b.category_seq
 		WHERE
+			a.is_delete = 'N') c
+		WHERE
+			<if test="searchText != null">
+			c.category_name REGEXP #{searchText}
+			OR c.food_name REGEXP #{searchText}
+			</if>
+		ORDER BY c.category_seq, c.food_name;
+	</select>
+	
+	<select id="selectFood" parameterType="Integer" resultType="java.util.HashMap">
+		SELECT
+			food_seq,
+			food_name,
+            food_expi_date
+		FROM food
+		WHERE
+			food_seq = #{foodSeq}
+			AND
+			is_delete = 'N';
+	</select>
+	
+	
+	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			a.food_seq,
+			a.food_name,
+            a.food_expi_date,
+            a.food_img,
+            a.category_seq,
+            b.category_name,
+            b.ord
+		FROM food a
+		LEFT JOIN category b ON a.category_seq = b.category_seq
+		WHERE
 			<if test="categorySeq != 0">
 				a.category_seq = #{categorySeq}
+				AND
 			</if>
-			AND a.is_delete = 'N'
-		ORDER BY food_name;
+			a.is_delete = 'N'
+		ORDER BY ord, food_name;
 	</select>
 	
 	<select id="getAllFoodList" parameterType="String" resultType="java.util.HashMap">
@@ -37,11 +77,12 @@
             food.food_expi_date,
             food.food_img,
             category.category_seq,
-            category.category_name
+            category.category_name,
+            category.ord
 		FROM food as food
 		LEFT JOIN category as category ON food.category_seq = category.category_seq
 		WHERE food.is_delete = 'N'
-		ORDER BY category.category_seq, food.food_name;
+		ORDER BY category.ord, food.food_name;
 	</select>
 	
 </mapper>

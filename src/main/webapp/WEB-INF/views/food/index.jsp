@@ -54,7 +54,8 @@
 							<c:forEach items="${fridgeList}" var="fridge" varStatus="status">
 								<c:choose>
 									<c:when test="${status.count == 1}">
-										<option value="${fridge.fridge_seq}" selected>${fridge.fridge_name}</option>									
+										<option value="${fridge.fridge_seq}" selected>${fridge.fridge_name}</option>
+										<c:set var="fridgeSeq" value="${fridge.fridge_seq}"	/>							
 									</c:when>
 									<c:otherwise>
 										<option value="${fridge.fridge_seq}">${fridge.fridge_name}</option>
@@ -65,29 +66,38 @@
 						<select class="utility-item" id="saveplace-list">
 							<c:forEach items="${saveplaceList}" var="saveplace" varStatus="status">
 								<c:choose>
-									<c:when test="${status.count == 1}">
-										<option value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
+									<c:when test="${fridgeSeq == saveplace.fridge_seq && status.count == 1}">
+										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
+									</c:when>
+									<c:when test="${fridgeSeq == saveplace.fridge_seq}">
+										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
 									</c:when>
 									<c:otherwise>
-										<option value="${saveplace.saveplace_seq}">${saveplace.saveplace_seq}</option>
+										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
 						</select>
+						<div id="added-food" class="added-food-none">
+							<div>
+								<span id="added-result">
+								</span>
+							</div>
+						</div>
 					</div>
 					<div class="search-utility utility">
 						<input class="utility-item" type="text" id="search-text" placeholder="검색"/>
-						<input type="button" class="search-btn utility-item"/>
+						<input type="button" id="search-btn" class="utility-item"/>
 					</div>
 				</div>
 			
 				<div class="category-container">
 					<div class="item-wrapper">
-						<a class="category-item" href="#" data-category-seq="0">전체</a>
+						<a class="category-item" href="#" data-category-seq="0" style="color:orange;">전체</a>
 					</div>
 					<c:forEach items="${categoryList}" varStatus="status" var="category">
-						<div class="item-wrapper" onclick="foodReload()">
-							<a class="category-item" href="#"  data-category-seq="${category.category_seq}">${category.category_name}</a>
+						<div class="item-wrapper">
+							<a class="category-item" href="#" data-category-seq="${category.category_seq}">${category.category_name}</a>
 						</div>
 					</c:forEach>
 				</div>
@@ -98,7 +108,7 @@
 							<h5>${foodList[0].category_name }</h5>
 							<div class="food-wrapper">
 								<c:forEach items="${foodList}" var="food">
-									<div class="food">
+									<div class="food" data-food-seq="${food.food_seq}">
 										<img src="${pageContext.request.contextPath}${food.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'"/> 
 										<span>${food.food_name }</span>
 									</div>
@@ -159,6 +169,189 @@
 	<script src="../../static/js/sb-admin.min.js"></script>
 
 	<script>
+		$(document).ready(function(){
+			result = [<c:forEach var="saveplace" items="${saveplaceList}" varStatus="status">
+				{	
+					saveplaceSeq:${saveplace.saveplace_seq},
+					addedFood:0
+				}
+				<c:if test="${!status.last}">,</c:if>
+			</c:forEach>];	
+		});
+	
+		$(".category-item").on("click", function(e){
+				e.preventDefault();
+				var categorySeq = $(e.target).get(0).dataset.categorySeq;
+				selectCategory(categorySeq);
+				$(".category-item").removeAttr("style");
+				$(e.target).attr("style","color:orange;");
+			});
+		
+		function selectCategory(categorySeq) {
+				var dataParam = {
+						"categorySeq":categorySeq
+						};
+				
+				$.ajax({
+			        url:'/api/food/list',
+			        type:'post',
+			        dataType:'json',
+			        contentType: 'application/json',
+			        data:JSON.stringify(dataParam),
+			        success:function(data,textStatus,jqXHR){
+			        	 if(jqXHR.status == "204"){
+			        		 	$(".food-container *").remove();
+			        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
+				            }
+			            else{
+			            		appendFoodList(data);
+				            }
+			        },error:function(data){
+			        	alert(data.responseText);
+			        }
+			    });
+			}
+		
+		$("#search-text").on("keydown", function(e){
+			if(e.keyCode == 13){
+				var searchText = $(e.target).val();
+				searchFood(searchText);
+				$(".category-item").removeAttr("style");
+			}
+		});
+		
+		$("#search-btn").on("click", function(e){
+			e.preventDefault();
+			var searchText = $("#search-text").val();
+			searchFood(searchText);
+			$(".category-item").removeAttr("style");
+		});
+		
+		
+		function searchFood(searchText) {
+			var dataParam = {
+					"searchText":searchText
+					};
+			
+			$.ajax({
+		        url:'/api/food/search',
+		        type:'post',
+		        dataType:'json',
+		        contentType: 'application/json',
+		        data:JSON.stringify(dataParam),
+		        success:function(data,textStatus,jqXHR){
+		        	 if(jqXHR.status == "204"){
+		        		 	$(".food-container *").remove();
+		        		 	$(".food-container").append('<div class="no-content"><span>검색된 정보가 없습니다.</span></div>');
+			            }
+		            else{
+			            	appendFoodList(data);
+			            }
+		        },error:function(data){
+		        	alert(data.responseText);
+		        }
+		    });
+		}
+
+		$("#fridge-list").on("change", function(e){
+				var fridgeSeq = $(e.target).val();
+				var count = 0;
+					$("#saveplace-list").children("option").each(function(i, saveplace){
+						if(saveplace.dataset.fridgeSeq == fridgeSeq){
+								saveplace.className = null;
+								if(count == 0){
+									saveplace.selected = true;
+									}
+								count++;
+							}
+						else{
+								saveplace.className = "unselected-fridge";
+							}
+	
+					})
+			
+			})
+			
+		$("#saveplace-list").on("change", function(e){
+			var saveplaceSeq = $(e.target).val();
+			showAddedFood(saveplaceSeq);
+		});
+			
+		$(".food-container").on("click", ".food", function(e){
+			if($("#check-auto-reg").get(0).checked){
+				var saveplaceSeq = $("#saveplace-list").val();
+				var div = e.target.nodeName != 'DIV' ? e.target.parentElement : e.target;
+				var foodSeq = div.dataset.foodSeq;
+
+				if(!saveplaceSeq){
+						alert("저장장소를 선택해주세요.");
+					};
+
+				if(!foodSeq){
+						alert("잘못된 선택입니다.");
+					};
+
+				var dataParam = {
+						"saveplaceSeq":saveplaceSeq,
+						"foodSeq":foodSeq
+						};
+
+				$.ajax({
+			        url:'/api/food/auto/reg',
+			        type:'post',
+			        dataType:'text',
+			        contentType: 'application/json',
+			        data:JSON.stringify(dataParam),
+			        success:function(data,textStatus,jqXHR){
+			        	 if(jqXHR.status == "204"){
+			        		 	
+				            }
+			            else{ 
+				            	var orgTop = $(div).children('img').offset().top;
+				            	var orgLeft = $(div).children('img').offset().left;
+				            	var moveTop = $("#saveplace-list").offset().top;
+				            	var moveLeft = $("#saveplace-list").offset().left;
+				            	var clone = div.firstElementChild.cloneNode();
+				            	$(clone).css({
+				            		width: "50px",
+				            		height: "50px",
+				            		position: "absolute"
+					            	});
+
+				            	$(clone).offset({top:orgTop, left:orgLeft});
+
+				            	$('body').get(0).appendChild(clone);
+								$(clone).animate({top:moveTop, left:moveLeft}, 300, function(){
+										$(clone).remove();
+									});
+								result.forEach(function(item){
+										if(item.saveplaceSeq == saveplaceSeq){
+												item.addedFood++;
+											}
+									})
+								showAddedFood(saveplaceSeq);
+ 				            }
+			        },error:function(data){
+			        	alert(data.responseText);
+			        }
+			    });
+			}
+		});
+
+		function showAddedFood(saveplaceSeq){
+				result.forEach(function(item){
+					if(item.saveplaceSeq == saveplaceSeq){
+						if(item.addedFood > 0){
+								$("#added-result").get(0).innerHTML = item.addedFood;
+								$("#added-food").attr("class", "added-food-block");
+							}
+						else{
+								$("#added-food").attr("class", "added-food-none");
+							}
+						}
+					});
+			}
+		
 		function logout() {
 			$.ajax({
 		        url:'/api/member/logout',
@@ -172,11 +365,28 @@
 		        }
 		    });
 		}
-
+		
+		function appendFoodList(data){
+				$(".food-container *").remove();
+	    		var textHtml = "";
+				$.each(data, function(i, foodList){
+					textHtml += '<div class="food-list">';
+					textHtml += '<h5>'+ foodList[0].category_name + '</h5>';
+					textHtml += '<div class="food-wrapper">';
+					$.each(foodList, function(j, food){
+						textHtml += '<div class="food" data-food-seq="'+ food.food_seq +'">';
+						textHtml +=	'<img src="${pageContext.request.contextPath}'+food.food_img+'" onerror="this.src=\'${pageContext.request.contextPath}/resources/img/not-found.png\'"/>'; 
+						textHtml +=	'<span>'+food.food_name+'</span>';
+						textHtml +=	'</div>'
+					})
+					textHtml+= '</div>';
+					textHtml+= '</div>';
+				})
+				$(".food-container").append(textHtml);
+			}
 	 	function showModal() {
 			$("#saveplaceModal").modal();
 		} 
-
 	</script>
 	
 </body>

@@ -1,7 +1,5 @@
 package com.ward.savefood.food.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -16,12 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ward.savefood.common.controller.GeneralController;
+import com.ward.savefood.food.model.InsertUserFoodRequest;
 import com.ward.savefood.food.model.SelectFoodRequest;
 import com.ward.savefood.food.service.UserFoodService;
-import com.ward.savefood.member.service.MemberService;
-import com.ward.savefood.admin.model.UpdateCustomerRequest;
-import com.ward.savefood.admin.service.CategoryService;
-import com.ward.savefood.admin.service.CustomerService;;
+import com.ward.savefood.fridge.service.FridgeService;
 
 @RestController
 @RequestMapping("/api/food")
@@ -29,6 +25,8 @@ public class UserFoodRestController extends GeneralController {
 	
 	@Autowired
 	private UserFoodService foodService;
+	@Autowired
+	private FridgeService fridgeService;
 	
 	@PostMapping("/list")
 	public ResponseEntity<?> getFoodList(@Valid @RequestBody SelectFoodRequest foodRequest, BindingResult bindingResult, HttpServletRequest request) {
@@ -39,6 +37,31 @@ public class UserFoodRestController extends GeneralController {
 		}
 		
 		return foodService.getFoodList(foodRequest);
+	}
+	
+	@PostMapping("/search")
+	public ResponseEntity<?> searchFoodList(@Valid @RequestBody SelectFoodRequest foodRequest, BindingResult bindingResult, HttpServletRequest request) {
+		logger.info("userFoodRestController searchFoodList : "+ foodRequest.toString());
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return foodService.searchFoodList(foodRequest);
+	}
+	
+	@PostMapping("/auto/reg")
+	public ResponseEntity<?> insertFoodAuto(@Valid @RequestBody InsertUserFoodRequest foodRequest, BindingResult bindingResult, HttpSession session) {
+		logger.info("userFoodRestController insertFoodAuto : "+ foodRequest.toString());
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		String memberSeq = fridgeService.getMemberSeq((String)session.getAttribute("loginInfo"));
+		foodRequest.setMemberSeq(memberSeq);
+
+		return foodService.insertFoodAuto(foodRequest);
 	}
 	
 }
