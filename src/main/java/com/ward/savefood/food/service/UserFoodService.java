@@ -2,6 +2,7 @@ package com.ward.savefood.food.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -177,6 +178,45 @@ public class UserFoodService {
 			}
 			
 			return foodListList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public ArrayList<Map<String, Object>> calculateFoodRisk(ArrayList<Map<String, Object>> savefoodList) {	
+		try {	
+			for(int i = 0 ; i < savefoodList.size(); i++) {
+				// 해당 식품에 대한 가이드 정보 get
+				Map<String, Object> food = foodDao.selectFood((int)savefoodList.get(i).get("food_seq"));
+				int expiDate = (int)food.get("food_expi_date"); // 해당 식품에 지정된 저장 기한 확인
+				Date now = new Date();							// 현재날짜
+				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date userFoodExpiDate = transFormat.parse((String)savefoodList.get(i).get("savefood_expi_date")); // 유저 식품에 저장된 유통기한
+				long diff = now.getTime() - userFoodExpiDate.getTime();	// 현재날짜 - 유저식품 유통기한
+				int diffDays = (int) diff/(24 * 60 * 60 * 1000); // 밀리초 단위로 계산된 차이를 날짜 단위로 변환
+				int danger = expiDate/3;						 // 남은기한이 어플에서 정해둔 기한의 1/3 미만이면 위험
+				int normal = (expiDate/3)*2;				     // 1/3 이상 2/3 미만 이면 보통 그 이상은 안전
+				if(danger > 14) {								 // 만약 위험한 기간이 2주 초과라면 위험 기간을 2주로 조정
+					danger = 14;
+				}
+				int risk = 0;
+				if(diffDays < danger) {
+					risk = 0;
+				}
+				else if(diffDays >= danger || diffDays < normal) {
+					risk = 1;
+				}
+				else {
+					risk = 2;
+				}
+				
+				savefoodList.get(i).put("savefood_risk", risk);
+			}
+			
+			return savefoodList;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
