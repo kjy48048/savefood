@@ -28,6 +28,7 @@
 .utility-container{
 	display:flex;
 	margin-bottom: 10px;
+	flex-wrap: wrap;
 }
 
 
@@ -124,6 +125,18 @@
 	vertical-align: middle;
 	text-overflow: clip;
 	font-size: 10px;
+}
+
+.modal-label {
+	min-width: 100px;
+	text-align: right;
+	padding-right: 10px;
+	line-height: calc(1.5em + 0.75rem + 2px);
+}
+
+.input-item {
+	height: calc(1.5em + 0.75rem + 2px);
+	width: 50%;
 }
 
 #check-auto-reg {

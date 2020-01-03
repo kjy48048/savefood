@@ -50,6 +50,17 @@ public class UserFoodRestController extends GeneralController {
 		return foodService.searchFoodList(foodRequest);
 	}
 	
+	@PostMapping("/info")
+	public ResponseEntity<?> getFoodInfo(@Valid @RequestBody SelectFoodRequest foodRequest, BindingResult bindingResult, HttpServletRequest request) {
+		logger.info("userFoodRestController getFoodInfo : "+ foodRequest.toString());
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return foodService.getFood(foodRequest);
+	}
+	
 	@PostMapping("/auto/reg")
 	public ResponseEntity<?> insertFoodAuto(@Valid @RequestBody InsertUserFoodRequest foodRequest, BindingResult bindingResult, HttpSession session) {
 		logger.info("userFoodRestController insertFoodAuto : "+ foodRequest.toString());
@@ -63,5 +74,18 @@ public class UserFoodRestController extends GeneralController {
 
 		return foodService.insertFoodAuto(foodRequest);
 	}
-	
+
+	@PostMapping("/reg")
+	public ResponseEntity<?> insertFood(@Valid @RequestBody InsertUserFoodRequest foodRequest, BindingResult bindingResult, HttpSession session) {
+		logger.info("userFoodRestController insertFood : "+ foodRequest.toString());
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		String memberSeq = fridgeService.getMemberSeq((String)session.getAttribute("loginInfo"));
+		foodRequest.setMemberSeq(memberSeq);
+
+		return foodService.insertFood(foodRequest);
+	}
 }
