@@ -9,7 +9,11 @@ public class UpdateFoodRequest {
 	@NotNull
 	private String foodName;
 	@NotNull
+	private int foodExpiDateFrozen;
+	@NotNull
 	private int foodExpiDate;
+	@NotNull
+	private int foodExpiDateRoom;
 	private String foodImg;
 	
 	public int getFoodSeq() {
@@ -24,11 +28,24 @@ public class UpdateFoodRequest {
 	public void setFoodName(String foodName) {
 		this.foodName = foodName;
 	}
+
+	public int getFoodExpiDateFrozen() {
+		return foodExpiDateFrozen;
+	}
+	public void setFoodExpiDateFrozen(int foodExpiDateFrozen) {
+		this.foodExpiDateFrozen = foodExpiDateFrozen;
+	}
 	public int getFoodExpiDate() {
 		return foodExpiDate;
 	}
 	public void setFoodExpiDate(int foodExpiDate) {
 		this.foodExpiDate = foodExpiDate;
+	}
+	public int getFoodExpiDateRoom() {
+		return foodExpiDateRoom;
+	}
+	public void setFoodExpiDateRoom(int foodExpiDateRoom) {
+		this.foodExpiDateRoom = foodExpiDateRoom;
 	}
 	public String getFoodImg() {
 		return foodImg;
@@ -38,7 +55,9 @@ public class UpdateFoodRequest {
 	}
 	@Override
 	public String toString() {
-		return "UpdateFoodRequest [foodSeq=" + foodSeq + ", foodName=" + foodName + ", foodExpiDate=" + foodExpiDate
+		return "UpdateFoodRequest [foodSeq=" + foodSeq + ", foodName=" + foodName + ", foodExpiDateFrozen="
+				+ foodExpiDateFrozen + ", foodExpiDate=" + foodExpiDate + ", foodExpiDateRoom=" + foodExpiDateRoom
 				+ ", foodImg=" + foodImg + "]";
 	}
+
 }

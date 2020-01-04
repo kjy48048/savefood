@@ -41,7 +41,9 @@ public class FoodService {
 		
 		try {			
 			String foodName = insertFoodRequest.getFoodName();
+			int expiDateFrozen = insertFoodRequest.getFoodExpiDateFrozen();
 			int expiDate = insertFoodRequest.getFoodExpiDate();
+			int expiDateRoom = insertFoodRequest.getFoodExpiDateRoom();
 			int categorySeq = insertFoodRequest.getCategorySeq();
 			
 			if(StringUtils.isEmpty(foodName) || (expiDate == 0 || expiDate > 999) || categorySeq == 0) {
@@ -50,7 +52,9 @@ public class FoodService {
 			
 			Map<String, Object> insertFood = new HashMap<String, Object>();
 			insertFood.put("foodName", foodName);
+			insertFood.put("expiDateFrozen", expiDateFrozen);
 			insertFood.put("expiDate", expiDate);
+			insertFood.put("expiDateRoom", expiDateRoom);
 			insertFood.put("categorySeq", categorySeq);
 			int insertResult = foodDao.insertFood(insertFood);
 			
@@ -74,7 +78,9 @@ public class FoodService {
 		try {		
 			int foodSeq = updateFoodRequest.getFoodSeq();
 			String foodName = updateFoodRequest.getFoodName();
+			int expiDateFrozen = updateFoodRequest.getFoodExpiDateFrozen();
 			int expiDate = updateFoodRequest.getFoodExpiDate();
+			int expiDateRoom = updateFoodRequest.getFoodExpiDateRoom();
 			String foodImg = updateFoodRequest.getFoodImg();
 			
 			if(foodSeq == 0 || StringUtils.isEmpty(foodName) || (expiDate == 0 || expiDate > 999)) {
@@ -84,7 +90,9 @@ public class FoodService {
 			Map<String, Object> updateFood = new HashMap<String, Object>();
 			updateFood.put("foodSeq", foodSeq);
 			updateFood.put("foodName", foodName);
-			updateFood.put("foodExpiDate", expiDate);
+			updateFood.put("expiDateFrozen", expiDateFrozen);
+			updateFood.put("expiDate", expiDate);
+			updateFood.put("expiDateRoom", expiDateRoom);
 			updateFood.put("foodImg", foodImg);
 			int updateResult = foodDao.updateFood(updateFood);
 			
