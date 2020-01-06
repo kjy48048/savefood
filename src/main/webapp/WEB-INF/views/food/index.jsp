@@ -67,13 +67,13 @@
 							<c:forEach items="${saveplaceList}" var="saveplace" varStatus="status">
 								<c:choose>
 									<c:when test="${fridgeSeq == saveplace.fridge_seq && status.count == 1}">
-										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
 									</c:when>
 									<c:when test="${fridgeSeq == saveplace.fridge_seq}">
-										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
 									</c:when>
 									<c:otherwise>
-										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
+										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code}"  value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -179,13 +179,13 @@
 							<c:forEach items="${saveplaceList}" var="saveplace" varStatus="status">
 								<c:choose>
 									<c:when test="${inputFridgeSeq == saveplace.fridge_seq && status.count == 1}">
-										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
 									</c:when>
 									<c:when test="${inputFridgeSeq == saveplace.fridge_seq}">
-										<option data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
 									</c:when>
 									<c:otherwise>
-										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}" value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
+										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}"  data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -352,6 +352,7 @@
 			var categorySeq = div.dataset.categorySeq;
 			if($("#check-auto-reg").get(0).checked){
 				var saveplaceSeq = $("#saveplace-list").val();
+				var storageCode = $("#saveplace-list").children("option[value='"+saveplaceSeq+"']").get(0).dataset.storageCode;
 
 				if(!saveplaceSeq){
 						alert("저장장소를 선택해주세요.");
@@ -363,7 +364,8 @@
 
 				var dataParam = {
 						"saveplaceSeq":saveplaceSeq,
-						"foodSeq":foodSeq
+						"foodSeq":foodSeq,
+						"stoeageCode":storageCode
 						};
 
 				$.ajax({
@@ -413,6 +415,7 @@
 
 		function foodReg() {
 			var saveplaceSeq = $("#input-saveplace-list").val();
+			var storageCode = $("#input-saveplace-list").children("option[value='"+saveplaceSeq+"']").get(0).dataset.storageCode;
 			var foodSeq = $("#input-food-list").val();
 			var savefoodName = $("#input-food-name").val();
 			var savefoodExpiDate = $("#input-expi-date").val();
@@ -427,6 +430,7 @@
 
 			var dataParam = {
 					"saveplaceSeq":saveplaceSeq,
+					"storageCode":storageCode,
 					"foodSeq":foodSeq,
 					"savefoodName":savefoodName,
 					"savefoodExpiDate":savefoodExpiDate,
@@ -527,7 +531,12 @@
 							}
 					})
 			})
-			
+		
+		$("#input-saveplace-list").on("change", function(e){
+				var foodSeq = $("#input-food-list").val();
+				selectInputFood(foodSeq);
+			})
+		
 		$("#input-category-list").on("change", function(e){
 				var categorySeq = $(e.target).val();
 				selectInputCategory(categorySeq);
@@ -603,7 +612,10 @@
 				$("#input-expi-date").attr("placeholder", "");		
 			}
 			else{
+				var saveplaceSeq = $("#input-saveplace-list").val();
+				var storageCode = $("#input-saveplace-list").children("option[value='"+saveplaceSeq+"']").get(0).dataset.storageCode;
 				var dataParam = {
+						"storageCode":storageCode,
 						"foodSeq":foodSeq
 						};
 				

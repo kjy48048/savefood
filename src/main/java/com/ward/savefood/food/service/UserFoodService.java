@@ -2,6 +2,7 @@ package com.ward.savefood.food.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +48,7 @@ public class UserFoodService {
 		try {			
 			String memberSeq = request.getMemberSeq();
 			int saveplaceSeq = request.getSaveplaceSeq();
+			int storageCode = request.getStorageCode();
 			int foodSeq = request.getFoodSeq();
 			String savefoodName = request.getSavefoodName();
 			String savefoodQuantity = request.getSavefoodQuantity();
@@ -55,8 +57,10 @@ public class UserFoodService {
 			if(StringUtils.isEmpty(memberSeq) || saveplaceSeq == 0 || foodSeq == 0) {
 				return new ResponseEntity<>("input food insert info", HttpStatus.NO_CONTENT);
 			}
-			
-			Map<String, Object> selectFoodInfo = foodDao.selectFood(foodSeq);
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			Map<String, Object> selectFoodInfo = foodDao.selectFood(selectFood);
 			Map<String, Object> insertUserFood = new HashMap<String, Object>();
 			if(savefoodExpiDate.getTime() == 0) {
 				int foodExpiDate = (int)selectFoodInfo.get("food_expi_date");
@@ -106,13 +110,17 @@ public class UserFoodService {
 		try {			
 			String memberSeq = request.getMemberSeq();
 			int saveplaceSeq = request.getSaveplaceSeq();
+			int storageCode = request.getStorageCode();
 			int foodSeq = request.getFoodSeq();
 			
 			if(StringUtils.isEmpty(memberSeq) || saveplaceSeq == 0 || foodSeq == 0) {
 				return new ResponseEntity<>("input food insert info", HttpStatus.NO_CONTENT);
 			}
 			
-			Map<String, Object> selectFoodInfo = foodDao.selectFood(foodSeq);
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			Map<String, Object> selectFoodInfo = foodDao.selectFood(selectFood);
 			Map<String, Object> insertUserFood = new HashMap<String, Object>();
 			int foodExpiDate = (int)selectFoodInfo.get("food_expi_date");
 			Calendar cal = Calendar.getInstance();
@@ -143,8 +151,14 @@ public class UserFoodService {
 	public ResponseEntity<?> getFood(SelectFoodRequest foodRequest){
 		
 		try {			
+			int storageCode = foodRequest.getStorageCode();
 			int foodSeq = foodRequest.getFoodSeq();		
-			Map<String, Object> food = foodDao.selectFood(foodSeq);
+			
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			
+			Map<String, Object> food = foodDao.selectFood(selectFood);
 			return new ResponseEntity<>(food, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -259,17 +273,24 @@ public class UserFoodService {
 	public ArrayList<Map<String, Object>> calculateFoodRisk(ArrayList<Map<String, Object>> savefoodList) {	
 		try {	
 			for(int i = 0 ; i < savefoodList.size(); i++) {
-				// ÇØ´ç ½ÄÇ°¿¡ ´ëÇÑ °¡ÀÌµå Á¤º¸ get
-				Map<String, Object> food = foodDao.selectFood((int)savefoodList.get(i).get("food_seq"));
-				int expiDate = (int)food.get("food_expi_date"); // ÇØ´ç ½ÄÇ°¿¡ ÁöÁ¤µÈ ÀúÀå ±âÇÑ È®ÀÎ
-				Date now = new Date();							// ÇöÀç³¯Â¥
-				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date userFoodExpiDate = transFormat.parse((String)savefoodList.get(i).get("savefood_expi_date")); // À¯Àú ½ÄÇ°¿¡ ÀúÀåµÈ À¯Åë±âÇÑ
-				long diff = now.getTime() - userFoodExpiDate.getTime();	// ÇöÀç³¯Â¥ - À¯Àú½ÄÇ° À¯Åë±âÇÑ
-				int diffDays = (int) diff/(24 * 60 * 60 * 1000); // ¹Ð¸®ÃÊ ´ÜÀ§·Î °è»êµÈ Â÷ÀÌ¸¦ ³¯Â¥ ´ÜÀ§·Î º¯È¯
-				int danger = expiDate/3;						 // ³²Àº±âÇÑÀÌ ¾îÇÃ¿¡¼­ Á¤ÇØµÐ ±âÇÑÀÇ 1/3 ¹Ì¸¸ÀÌ¸é À§Çè
-				int normal = (expiDate/3)*2;				     // 1/3 ÀÌ»ó 2/3 ¹Ì¸¸ ÀÌ¸é º¸Åë ±× ÀÌ»óÀº ¾ÈÀü
-				if(danger > 14) {								 // ¸¸¾à À§ÇèÇÑ ±â°£ÀÌ 2ÁÖ ÃÊ°ú¶ó¸é À§Çè ±â°£À» 2ÁÖ·Î Á¶Á¤
+				int storageCode = (int)savefoodList.get(i).get("saveplace_storage_code");
+				int foodSeq = (int)savefoodList.get(i).get("food_seq");	
+				
+				Map<String, Object> selectFood = new HashMap<>();
+				selectFood.put("storageCode", storageCode);
+				selectFood.put("foodSeq", foodSeq);
+				
+				// ï¿½Ø´ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ get
+				Map<String, Object> food = foodDao.selectFood(selectFood);
+				int expiDate = (int)food.get("food_expi_date"); // ï¿½Ø´ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+				Date now = new Date();							// ï¿½ï¿½ï¿½ç³¯Â¥
+//				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date userFoodExpiDate = new Date(((Timestamp)savefoodList.get(i).get("savefood_expi_date")).getTime()); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				long diff = now.getTime() - userFoodExpiDate.getTime();	// ï¿½ï¿½ï¿½ç³¯Â¥ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				int diffDays = (int) diff/(24 * 60 * 60 * 1000); // ï¿½Ð¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+				int danger = expiDate/3;						 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1/3 ï¿½Ì¸ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+				int normal = (expiDate/3)*2;				     // 1/3 ï¿½Ì»ï¿½ 2/3 ï¿½Ì¸ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				if(danger > 14) {								 // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ 2ï¿½ï¿½ ï¿½Ê°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ 2ï¿½Ö·ï¿½ ï¿½ï¿½ï¿½ï¿½
 					danger = 14;
 				}
 				int risk = 0;

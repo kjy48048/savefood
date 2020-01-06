@@ -5,6 +5,7 @@ public class SelectFoodRequest {
 	
 	private int categorySeq;
 	private int foodSeq;
+	private int storageCode;
 	private String searchText;
 
 	public int getCategorySeq() {
@@ -23,14 +24,21 @@ public class SelectFoodRequest {
 		this.foodSeq = foodSeq;
 	}
 
+	public int getStorageCode() {
+		return storageCode;
+	}
+
+	public void setStorageCode(int storageCode) {
+		this.storageCode = storageCode;
+	}
+
 	public String getSearchText() {
 		return searchText.replaceAll("[ ,/&]", "|");
 	}
 
 	@Override
 	public String toString() {
-		return "SelectFoodRequest [categorySeq=" + categorySeq + ", foodSeq=" + foodSeq + ", searchText=" + searchText
-				+ "]";
+		return "SelectFoodRequest [categorySeq=" + categorySeq + ", foodSeq=" + foodSeq + ", storageCode=" + storageCode
+				+ ", searchText=" + searchText + "]";
 	}
-	
 }

@@ -5,9 +5,9 @@
  
 	<insert id="insertFood" useGeneratedKeys="true" keyProperty="foodSeq">
 		INSERT INTO
-			food (food_name, food_expi_date, category_seq,  insert_date)
+			food (food_name, food_expi_date_frozen, food_expi_date, food_expi_date_room, category_seq,  insert_date)
 		VALUES
-			(#{foodName}, #{expiDate}, #{categorySeq}, now());
+			(#{foodName}, #{expiDateFrozen}, #{expiDate}, #{expiDateRoom}, #{categorySeq}, now());
 	</insert>
 	 
 	<update id="updateFood" parameterType="java.util.HashMap">
@@ -15,7 +15,9 @@
 			food
 		SET
 			food_name = #{foodName},
-			food_expi_date = #{foodExpiDate},
+			food_expi_date_frozen = #{expiDateFrozen},
+			food_expi_date = #{expiDate},
+			food_expi_date_room = #{expiDateRoom},
 			modify_date = now()
 		WHERE
 			food_seq = #{foodSeq};
@@ -56,7 +58,9 @@
 		SELECT
 			a.food_seq,
 			a.food_name,
+			a.food_expi_date_frozen,
             a.food_expi_date,
+            a.food_expi_date_room,
             a.food_img,
             a.category_seq,
             b.category_name
@@ -71,7 +75,9 @@
 	<select id="getAllFoodList" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			food.food_name,
+           	food.food_expi_date_frozen,
             food.food_expi_date,
+            food.food_expi_date_room,
             category.category_name
 		FROM food as food
 		LEFT JOIN category as category ON food.category_seq = category.category_seq

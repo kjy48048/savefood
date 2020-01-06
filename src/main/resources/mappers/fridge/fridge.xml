@@ -30,7 +30,7 @@
 	</select>
 	
 	<select id="getSaveplace" resultType="java.util.HashMap">
-		SELECT a.saveplace_seq, a.fridge_seq, a.saveplace_name, b.fridge_ord
+		SELECT a.saveplace_seq, a.fridge_seq, a.saveplace_name, a.saveplace_storage_code, b.fridge_ord
 		FROM
 			saveplace a
 		LEFT JOIN fridge b ON a.fridge_seq = b.fridge_seq
@@ -50,22 +50,25 @@
 			</choose> -->
 	</select>
 	
-	<select id="getSavefoodList" resultType="java.util.HashMap">
+	<select id="getSavefoods" resultType="java.util.HashMap">
 		SELECT
-			*, count(*) as count
+			a.*, b.saveplace_storage_code
 		FROM
-			savefood
+			savefood a
+		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
 		WHERE
 			<foreach collection="saveplaceSeqList" item="item" separator="or" index="index">
-			saveplace_seq = #{item}
+			a.saveplace_seq = #{item}
 			</foreach>
-			AND is_delete = 'N';
+			AND a.is_delete = 'N'
+		ORDER BY a.savefood_expi_date;
 	</select>
 	
 	<select id="getSaveplaceList" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			a.saveplace_seq,
-			a.saveplace_name
+			a.saveplace_name,
+			a.saveplace_storage_code
 		FROM saveplace a
 		LEFT JOIN fridge b ON a.fridge_seq = b.fridge_seq
 		WHERE
@@ -76,7 +79,7 @@
 	
 	<insert id="insertSaveplace" useGeneratedKeys="true" keyProperty="saveplaceSeq">
 		INSERT INTO
-			saveplace (fridge_seq, saveplace_name, saveplace_strorage_code,  insert_date)
+			saveplace (fridge_seq, saveplace_name, saveplace_storage_code,  insert_date)
 		VALUES
 			(#{fridgeSeq}, #{saveplace}, #{storage}, now());
 	</insert>	

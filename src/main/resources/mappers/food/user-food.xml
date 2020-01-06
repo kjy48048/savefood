@@ -37,11 +37,21 @@
 		ORDER BY c.category_seq, c.food_name;
 	</select>
 	
-	<select id="selectFood" parameterType="Integer" resultType="java.util.HashMap">
+	<select id="selectFood" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			food_seq,
 			food_name,
-            food_expi_date
+		<choose>
+			<when test="storageCode == 1">
+				food_expi_date_frozen as food_expi_date
+			</when>
+			<when test="storageCode == 3">
+				food_expi_date_room as food_expi_date
+			</when>
+			<otherwise>
+				food_expi_date
+			</otherwise>
+		</choose>
 		FROM food
 		WHERE
 			food_seq = #{foodSeq}
