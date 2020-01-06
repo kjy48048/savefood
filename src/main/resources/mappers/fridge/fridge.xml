@@ -36,7 +36,7 @@
 		LEFT JOIN fridge b ON a.fridge_seq = b.fridge_seq
 		WHERE
 			a.fridge_seq IN(
-			<foreach collection="fridge" item="item" separator="or" index="index">
+			<foreach collection="fridge" item="item" separator="," index="index">
 			#{item.fridge_seq}
 			</foreach>
 			) 	

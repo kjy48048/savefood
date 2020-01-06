@@ -30,9 +30,11 @@ public class FridgeController {
 			String memberSeq = fridgeService.getMemberSeq(memberId);
 			
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
-			ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridge);
-			model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplace));
-			model.addAttribute("saveplaceList", saveplace);
+			if(fridge.size() != 0) {
+				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridge);
+				model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplace));
+				model.addAttribute("saveplaceList", saveplace);
+			}
 			model.addAttribute("fridgeList", fridge);
 
 			return "fridge/index";
