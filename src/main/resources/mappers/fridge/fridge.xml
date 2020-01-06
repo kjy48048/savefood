@@ -50,7 +50,7 @@
 			</choose> -->
 	</select>
 	
-	<select id="getSavefoodList" resultType="java.util.HashMap">
+	<select id="getSavefoods" resultType="java.util.HashMap">
 		SELECT
 			*, count(*) as count
 		FROM

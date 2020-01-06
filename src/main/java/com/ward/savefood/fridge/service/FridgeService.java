@@ -31,23 +31,27 @@ public class FridgeService {
 	
 	private DefaultTransactionDefinition def = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
 
+	// get memberSeq
 	public String getMemberSeq(String memberId) {
 		String memberSeq = fridgeDao.getMemberSeq(memberId);
 		return memberSeq;
 	}
 
+	// get fridgeList
 	public ArrayList<Map<String, Object>> getFridgeList(String memberSeq) {
 		ArrayList<Map<String, Object>> fridgeList = fridgeDao.getFridgeList(memberSeq);
 		return fridgeList;
 	}
 
+	// get saveplaceList - fridge/index.jsp 에서 활용
 	public ArrayList<Map<String, Object>> getSaveplaceList(int[] fridgeSeqList) {
 		ArrayList<Map<String, Object>> saveplaceList = fridgeDao.getSaveplace(fridgeSeqList);
 		return saveplaceList;
 	}
 
+	// get savefoodList - fridge/index.jsp 에서 활용
 	public ArrayList<Map<String, Object>> getSavefoodList(int[] saveplaceSeqList) {
-		ArrayList<Map<String, Object>> savefoodList = fridgeDao.getSavefoodList(saveplaceSeqList);
+		ArrayList<Map<String, Object>> savefoodList = fridgeDao.getSavefoods(saveplaceSeqList);
 		return savefoodList;
 	}
 	
