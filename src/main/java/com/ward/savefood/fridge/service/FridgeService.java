@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
+import com.ward.savefood.food.service.UserFoodService;
 import com.ward.savefood.fridge.dao.FridgeDao;
 import com.ward.savefood.fridge.model.InsertSaveplaceRequest;
 import com.ward.savefood.fridge.model.UpdateSaveplaceRequest;
@@ -25,6 +26,9 @@ public class FridgeService {
 	
 	@Autowired
 	private FridgeDao fridgeDao;
+	
+	@Autowired
+	private UserFoodService userFoodService;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -51,8 +55,14 @@ public class FridgeService {
 
 	// get savefoodList - fridge/index.jsp 에서 활용
 	public ArrayList<Map<String, Object>> getSavefoodList(int[] saveplaceSeqList) {
-		ArrayList<Map<String, Object>> savefoodList = fridgeDao.getSavefoods(saveplaceSeqList);
-		return savefoodList;
+		ArrayList<Map<String, Object>> savefoodList1 = fridgeDao.getSavefoods(saveplaceSeqList);
+
+		ArrayList<Map<String, Object>> savefoodList2 = userFoodService.calculateFoodRisk(savefoodList1);
+		
+		for(int i=0; i<savefoodList2.size(); i++) {
+			System.out.println(savefoodList2.get(i));
+		}
+		return savefoodList2;
 	}
 	
 	// get storage

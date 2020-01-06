@@ -47,9 +47,9 @@ public class FridgeController {
 						saveplaceSeqList[j] = (Integer) saveplace.get(j).get("saveplace_seq");
 					}
 
-					model.addAttribute("savefood", fridgeService.getSavefoodList(saveplaceSeqList));
+					model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplaceSeqList));
 				}
-				model.addAttribute("saveplace", saveplace);
+				model.addAttribute("saveplaceList", saveplace);
 			}
 			model.addAttribute("fridgeList", fridge);
 			

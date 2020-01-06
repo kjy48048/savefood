@@ -52,15 +52,16 @@
 	
 	<select id="getSavefoods" resultType="java.util.HashMap">
 		SELECT
-			a.*, count(a.*) as count, b.storage_code
+			a.*, b.saveplace_storage_code
 		FROM
 			savefood a
-		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq;
+		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
 		WHERE
 			<foreach collection="saveplaceSeqList" item="item" separator="or" index="index">
 			a.saveplace_seq = #{item}
 			</foreach>
-			AND a.is_delete = 'N';
+			AND a.is_delete = 'N'
+		ORDER BY a.savefood_expi_date;
 	</select>
 	
 	<select id="getSaveplaceList" parameterType="String" resultType="java.util.HashMap">
