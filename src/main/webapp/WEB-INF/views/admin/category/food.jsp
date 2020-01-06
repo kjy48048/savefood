@@ -56,11 +56,16 @@
 						<table class="table table-bordered" id="dataTable">
 							<thead>
 								<tr style="text-align : center">
-									<th><input type="checkbox"></th>
-									<th>이미지</th>
-									<th>식품명</th>
-									<th>유통기한</th>
-									<th>수정</th>
+									<th rowspan="2"><input type="checkbox"></th>
+									<th rowspan="2">이미지</th>
+									<th rowspan="2">식품명</th>
+									<th colspan="3">유통기한</th>
+									<th rowspan="2">수정</th>
+								</tr>
+								<tr style="text-align : center">
+									<th>냉동보관</th>
+									<th>냉장보관</th>
+									<th>상온보관</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -85,7 +90,13 @@
 										<input id="foodName${food.food_seq }" type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_name}" disabled>
 									</td>
 									<td style="text-align:center; vertical-align:middle;">
-										<input id="foodExpiDate${food.food_seq }" type="text" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
+										<input id="foodExpiDateFrozen${food.food_seq }" type="number" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date_frozen}" maxlength="3" oninput="numberMaxLength(this)" disabled>
+									</td>
+									<td style="text-align:center; vertical-align:middle;">
+										<input id="foodExpiDate${food.food_seq }" type="number" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date}" disabled>
+									</td>
+									<td style="text-align:center; vertical-align:middle;">
+										<input id="foodExpiDateRoom${food.food_seq }" type="number" class="form-control" style="border:0px; background:#ffffff" value="${food.food_expi_date_room}" maxlength="3" oninput="numberMaxLength(this)" disabled>
 									</td>
 									<td style="text-align:center; vertical-align:middle;">
 										<input type="button" class="btn btn-primary updateBtn" value="수정">
@@ -126,8 +137,16 @@
 				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">식품명 :</div>
 					<input type="text" id="inputFoodName" class="form-control" placeholder="식품명" required="required">
 				</div>
-				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">유통기한 :</div>
+				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">냉동보관:</div>
+					<input type="number" id="inputExpiDateFrozen" class="form-control" placeholder="0" required="required" maxlength="3" oninput="numberMaxLength(this)">
+					<div style="min-width: 30px; margin: auto; text-align: center;">일</div>
+				</div>
+				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">냉장보관:</div>
 					<input type="number" id="inputExpiDate" class="form-control" placeholder="0" required="required" maxlength="3" oninput="numberMaxLength(this)">
+					<div style="min-width: 30px; margin: auto; text-align: center;">일</div>
+				</div>
+				<div class="modal-body-flex-row"><div style="min-width: 80px; margin: auto;">상온보관:</div>
+					<input type="number" id="inputExpiDateRoom" class="form-control" placeholder="0" required="required" maxlength="3" oninput="numberMaxLength(this)">
 					<div style="min-width: 30px; margin: auto; text-align: center;">일</div>
 				</div>
 				<div class="modal-footer">
@@ -194,13 +213,15 @@
 		function checkDuplicate() {
 			var foodName = $("#inputFoodName").val();
 			var expiDate = $("#inputExpiDate").val();
+			var expiDateFrozen = $("#inputExpiDateFrozen").val();
+			var expiDateRoom = $("#inputExpiDateRoom").val();
 
 			if(!foodName) {
 				alert("식품명을 입력해주세요.");
 				$("#inputFoodName").focus();
 				return;
 			}
-			if(!expiDate) {
+			if(!expiDate || !expiDateFrozen || !expiDateRoom) {
 				alert("유통기한을 입력해주세요.");
 				$("#inputExpiDate").focus();
 				return;
@@ -241,6 +262,8 @@
 		function foodReg() {
 			var foodName = $("#inputFoodName").val();
 			var expiDate = $("#inputExpiDate").val();
+			var expiDateFrozen = $("#inputExpiDateFrozen").val();
+			var expiDateRoom = $("#inputExpiDateRoom").val();
 			var categorySeq = "${categorySeq}";
 			var foodImg  = $("#inputImg")[0].files[0];
 
@@ -249,7 +272,7 @@
 				$("#inputFoodName").focus();
 				return;
 			}
-			if(!expiDate) {
+			if(!expiDate || !expiDateFrozen || !expiDateRoom) {
 				alert("유통기한을 입력해주세요.");
 				$("#inputExpiDate").focus();
 				return;
@@ -257,8 +280,10 @@
 			
 			var dataParam = {
 					"foodName":foodName,
+					"categorySeq":categorySeq,
 					"foodExpiDate":expiDate,
-					"categorySeq":categorySeq
+					"foodExpiDateFrozen":expiDateFrozen,
+					"foodExpiDateRoom":expiDateRoom
 				}
 
 			$.ajax({
@@ -326,6 +351,8 @@
 			var foodSeq = $(this).parent().parent().children(":first-child").children().val();
 			var foodName = $("#foodName"+foodSeq).val();
 			var foodExpiDate = $("#foodExpiDate"+foodSeq).val();
+			var foodExpiDateFrozen = $("#foodExpiDateFrozen"+foodSeq).val();
+			var foodExpiDateRoom = $("#foodExpiDateRoom"+foodSeq).val();
 			var updateImg = $("#updateImg"+foodSeq).get(0).files[0];
 
 			if(!foodName) {
@@ -333,7 +360,7 @@
 				$("#foodName"+foodSeq).focus();
 				return;
 			}
-			if(!foodExpiDate) {
+			if(!foodExpiDate || !foodExpiDateFrozen || !foodExpiDateRoom) {
 				alert("유통기한을 입력해주세요.");
 				$("#foodExpiDate"+foodSeq).focus();
 				return;
@@ -342,19 +369,27 @@
 			var dataParam = {
 					"foodSeq":foodSeq,
 					"foodName":foodName,
-					"foodExpiDate":foodExpiDate
+					"foodExpiDate":foodExpiDate,
+					"foodExpiDateFrozen":foodExpiDateFrozen,
+					"foodExpiDateRoom":foodExpiDateRoom
 			}
 			
 			var btn = $(this);
 			var inputFoodName = $("#foodName"+foodSeq);
+			var inputExpiDateFrozen = $("#foodExpiDateFrozen"+foodSeq);
 			var inputExpiDate = $("#foodExpiDate"+foodSeq);
+			var inputExpiDateRoom = $("#foodExpiDateRoom"+foodSeq);
 			var updateBtn = $("#updateButton"+foodSeq);
 			
 			if (btn.val() == "수정") {
 				inputFoodName.removeAttr("disabled");
 				inputFoodName.attr("style", "border:1px solid #000000; background:#ffffff");
+				inputExpiDateFrozen.removeAttr("disabled");
+				inputExpiDateFrozen.attr("style", "border:1px solid #000000; background:#ffffff");
 				inputExpiDate.removeAttr("disabled");
 				inputExpiDate.attr("style", "border:1px solid #000000; background:#ffffff");
+				inputExpiDateRoom.removeAttr("disabled");
+				inputExpiDateRoom.attr("style", "border:1px solid #000000; background:#ffffff");
 				updateBtn.removeAttr("style");
 				
 				var len = inputFoodName.val().length;
@@ -384,8 +419,12 @@
 				
  				inputFoodName.attr("disabled", "disabled");
  				inputFoodName.attr("style", "border:0px; background:#ffffff");
- 				inputExpiDate.attr("disabled", "disabled");
- 				inputExpiDate.attr("style", "border:0px; background:#ffffff");
+				inputExpiDateFrozen.removeAttr("disabled");
+				inputExpiDateFrozen.attr("style", "border:0px; background:#ffffff");
+				inputExpiDate.removeAttr("disabled");
+				inputExpiDate.attr("style", "border:0px; background:#ffffff");
+				inputExpiDateRoom.removeAttr("disabled");
+				inputExpiDateRoom.attr("style", "border:0px; background:#ffffff");
  				updateBtn.attr("style", "display: none;");
 				
 				btn.attr("value", "수정");

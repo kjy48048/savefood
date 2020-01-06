@@ -10,6 +10,7 @@ public class InsertUserFoodRequest {
 	private int foodSeq;
 	@NotNull
 	private int saveplaceSeq;
+	private int storageCode;
 	private String memberSeq;
 	private String savefoodName;
 	private String savefoodQuantity;
@@ -26,6 +27,12 @@ public class InsertUserFoodRequest {
 	}
 	public void setSaveplaceSeq(int saveplaceSeq) {
 		this.saveplaceSeq = saveplaceSeq;
+	}
+	public int getStorageCode() {
+		return storageCode;
+	}
+	public void setStorageCode(int storageCode) {
+		this.storageCode = storageCode;
 	}
 	public String getMemberSeq() {
 		return memberSeq;
@@ -53,9 +60,8 @@ public class InsertUserFoodRequest {
 	}
 	@Override
 	public String toString() {
-		return "InsertUserFoodRequest [foodSeq=" + foodSeq + ", saveplaceSeq=" + saveplaceSeq + ", memberSeq="
-				+ memberSeq + ", savefoodName=" + savefoodName + ", savefoodQuantity=" + savefoodQuantity
-				+ ", savefoodExpiDate=" + savefoodExpiDate + "]";
-	}
-	
+		return "InsertUserFoodRequest [foodSeq=" + foodSeq + ", saveplaceSeq=" + saveplaceSeq + ", storageCode="
+				+ storageCode + ", memberSeq=" + memberSeq + ", savefoodName=" + savefoodName + ", savefoodQuantity="
+				+ savefoodQuantity + ", savefoodExpiDate=" + savefoodExpiDate + "]";
+	}	
 }

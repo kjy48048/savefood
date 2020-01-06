@@ -41,20 +41,85 @@ public class UserFoodService {
 	
 	private DefaultTransactionDefinition def = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
 	
-
+	public ResponseEntity<?> insertFood(InsertUserFoodRequest request) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {			
+			String memberSeq = request.getMemberSeq();
+			int saveplaceSeq = request.getSaveplaceSeq();
+			int storageCode = request.getStorageCode();
+			int foodSeq = request.getFoodSeq();
+			String savefoodName = request.getSavefoodName();
+			String savefoodQuantity = request.getSavefoodQuantity();
+			Date savefoodExpiDate = request.getSavefoodExpiDate();
+			
+			if(StringUtils.isEmpty(memberSeq) || saveplaceSeq == 0 || foodSeq == 0) {
+				return new ResponseEntity<>("input food insert info", HttpStatus.NO_CONTENT);
+			}
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			Map<String, Object> selectFoodInfo = foodDao.selectFood(selectFood);
+			Map<String, Object> insertUserFood = new HashMap<String, Object>();
+			if(savefoodExpiDate.getTime() == 0) {
+				int foodExpiDate = (int)selectFoodInfo.get("food_expi_date");
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				cal.add(Calendar.DATE, foodExpiDate);
+				insertUserFood.put("savefoodExpiDate", cal.getTime());
+			}
+			else {
+				insertUserFood.put("savefoodExpiDate", savefoodExpiDate);
+			}
+			
+			insertUserFood.put("memberSeq", memberSeq);
+			insertUserFood.put("saveplaceSeq", saveplaceSeq);
+			insertUserFood.put("foodSeq", foodSeq);
+			if(StringUtils.isEmpty(savefoodName)) {
+				insertUserFood.put("savefoodName", (String)selectFoodInfo.get("food_name"));
+			}
+			else {
+				insertUserFood.put("savefoodName", savefoodName);
+			}
+			
+			if(StringUtils.isEmpty(savefoodQuantity)) {
+				insertUserFood.put("savefoodQuantity", 0);
+			}
+			else {
+				insertUserFood.put("savefoodQuantity", savefoodQuantity);
+			}
+			
+			int insertResult = foodDao.insertUserFood(insertUserFood);
+			
+			if(insertResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>("insert complete", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to regist category", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	public ResponseEntity<?> insertFoodAuto(InsertUserFoodRequest request) {
 		TransactionStatus status = transactionManager.getTransaction(def);
 		
 		try {			
 			String memberSeq = request.getMemberSeq();
 			int saveplaceSeq = request.getSaveplaceSeq();
+			int storageCode = request.getStorageCode();
 			int foodSeq = request.getFoodSeq();
 			
 			if(StringUtils.isEmpty(memberSeq) || saveplaceSeq == 0 || foodSeq == 0) {
 				return new ResponseEntity<>("input food insert info", HttpStatus.NO_CONTENT);
 			}
 			
-			Map<String, Object> selectFoodInfo = foodDao.selectFood(foodSeq);
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			Map<String, Object> selectFoodInfo = foodDao.selectFood(selectFood);
 			Map<String, Object> insertUserFood = new HashMap<String, Object>();
 			int foodExpiDate = (int)selectFoodInfo.get("food_expi_date");
 			Calendar cal = Calendar.getInstance();
@@ -80,6 +145,24 @@ public class UserFoodService {
 		
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to regist category", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<?> getFood(SelectFoodRequest foodRequest){
+		
+		try {			
+			int storageCode = foodRequest.getStorageCode();
+			int foodSeq = foodRequest.getFoodSeq();		
+			
+			Map<String, Object> selectFood = new HashMap<>();
+			selectFood.put("storageCode", storageCode);
+			selectFood.put("foodSeq", foodSeq);
+			
+			Map<String, Object> food = foodDao.selectFood(selectFood);
+			return new ResponseEntity<>(food, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>("fail to select food", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public ResponseEntity<?> getFoodList(SelectFoodRequest foodRequest) {	
@@ -189,8 +272,15 @@ public class UserFoodService {
 	public ArrayList<Map<String, Object>> calculateFoodRisk(ArrayList<Map<String, Object>> savefoodList) {	
 		try {	
 			for(int i = 0 ; i < savefoodList.size(); i++) {
+				int storageCode = (int)savefoodList.get(i).get("storage_code");
+				int foodSeq = (int)savefoodList.get(i).get("food_seq");	
+				
+				Map<String, Object> selectFood = new HashMap<>();
+				selectFood.put("storageCode", storageCode);
+				selectFood.put("foodSeq", foodSeq);
+				
 				// 해당 식품에 대한 가이드 정보 get
-				Map<String, Object> food = foodDao.selectFood((int)savefoodList.get(i).get("food_seq"));
+				Map<String, Object> food = foodDao.selectFood(selectFood);
 				int expiDate = (int)food.get("food_expi_date"); // 해당 식품에 지정된 저장 기한 확인
 				Date now = new Date();							// 현재날짜
 				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
