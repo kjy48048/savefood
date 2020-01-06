@@ -45,7 +45,7 @@
 
 			<div class="container-fluid">
 
-				<!-- Breadcrumbs-->
+<!-- 				Breadcrumbs
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
 						<a href="#">냉장</a>
@@ -53,7 +53,7 @@
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 
-				<!-- Icon Cards-->
+				Icon Cards
 				<div class="row">
                     <div class="col-xl-2 col-sm-4 mb-3 dropdown">
 						<div class="card text-white bg-danger o-hidden h-70" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -142,7 +142,7 @@
 					</div>
 				</div>
 				
-				<!-- Breadcrumbs-->
+				Breadcrumbs
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">
 						<a href="#">냉동</a>
@@ -150,7 +150,7 @@
 					<li class="breadcrumb-item active">Overview</li>
 				</ol>
 
-				<!-- Icon Cards-->
+				Icon Cards
 				<div class="row">
 					<div class="col-xl-2 col-sm-4 mb-3">
 						<div class="card text-white bg-success o-hidden h-70">
@@ -212,12 +212,12 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				
 				<!-- Breadcrumbs-->
 				<c:forEach items="${saveplaceList}" var="saveplace" varStatus="list"> 
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item" style="width: auto;">
+					<li class="breadcrumb-item ml-auto ml-md-0" style="width: auto;">
 						<!-- <a href="#" id="saveplaceName${saveplace.saveplace_seq}">${saveplace.saveplace_name}</a> -->
 						<a href="#">
 							<input id="saveplaceName${saveplace.saveplace_seq}" type="text"
@@ -225,13 +225,11 @@
 								value="${saveplace.saveplace_name}" disabled/>
 						</a>	
 					</li>
-					<ul class="navbar-nav ml-auto mr-md-0">
-						<li class="breadcrumb-item active">
-							<i id="saveplaceEdit${saveplace.saveplace_seq}"
-								class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
-							<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
-						</li>
-					</ul>
+					<li class="ml-auto mr-md-0" style="color: #6c757d;">
+						<i id="saveplaceEdit${saveplace.saveplace_seq}"
+							class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
+						<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
+					</li>
 					
 				</ol>
 				</c:forEach>					
