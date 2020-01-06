@@ -35,9 +35,11 @@
 			saveplace a
 		LEFT JOIN fridge b ON a.fridge_seq = b.fridge_seq
 		WHERE
-			<foreach collection="fridgeSeqList" item="item" separator="or" index="index">
-			a.fridge_seq = #{item}
+			a.fridge_seq IN(
+			<foreach collection="fridge" item="item" separator="or" index="index">
+			#{item.fridge_seq}
 			</foreach>
+			) 	
 			AND a.is_delete = 'N'
 			ORDER BY b.fridge_ord;
 <!-- 			<choose>
