@@ -122,6 +122,7 @@
 										</div>						
 										</c:if>
 									</c:forEach>
+
 							</div>
 						</c:forEach>
 					</c:when>

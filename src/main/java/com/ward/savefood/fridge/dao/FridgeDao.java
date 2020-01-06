@@ -18,4 +18,5 @@ public interface FridgeDao {
 	int insertSaveplace(Map<String, Object> insertSaveplace);
 	int updateSaveplace(Map<String, Object> updateSaveplace);
 	int deleteSaveplace(Map<String, Object> deleteSaveplace);
+
 }

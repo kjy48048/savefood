@@ -108,7 +108,6 @@ public class FridgeService {
 		return dashboardList;
 	}
 	
-	
 	// get storage
 	public List<Map<String, Object>> getStorage() {
 		
