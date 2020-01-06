@@ -280,31 +280,33 @@ public class UserFoodService {
 				selectFood.put("storageCode", storageCode);
 				selectFood.put("foodSeq", foodSeq);
 				
-				// �ش� ��ǰ�� ���� ���̵� ���� get
+				// ?�쌔?�옙 ?�쏙?�품?�쏙???�쏙?�占?�옙 ?�쏙?�占?�듸???�쏙?�占?�옙 get
 				Map<String, Object> food = foodDao.selectFood(selectFood);
-				int expiDate = (int)food.get("food_expi_date"); // �ش� ��ǰ�� ������ ���� ���� Ȯ��
-				Date now = new Date();							// ���糯¥
-//				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date userFoodExpiDate = new Date(((Timestamp)savefoodList.get(i).get("savefood_expi_date")).getTime()); // ���� ��ǰ�� ����� �������
-				long diff = now.getTime() - userFoodExpiDate.getTime();	// ���糯¥ - ������ǰ �������
-				int diffDays = (int) diff/(24 * 60 * 60 * 1000); // �и��� ������ ���� ���̸� ��¥ ������ ��ȯ
-				int danger = expiDate/3;						 // ���������� ���ÿ��� ���ص� ������ 1/3 �̸��̸� ����
-				int normal = (expiDate/3)*2;				     // 1/3 �̻� 2/3 �̸� �̸� ���� �� �̻��� ����
-				if(danger > 14) {								 // ���� ������ �Ⱓ�� 2�� �ʰ���� ���� �Ⱓ�� 2�ַ� ����
+				int expiDate = (int)food.get("food_expi_date"); // ?�쌔?�옙 ?�쏙?�품?�쏙???�쏙?�占?�옙?�쏙???�쏙?�占?�옙 ?�쏙?�占?�옙 ?�占?�옙
+				Date now = new Date();							// ?�쏙?�占?�날�?
+				SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				//Date userFoodExpiDate = new Date(((Timestamp)savefoodList.get(i).get("savefood_expi_date")).getTime()); // ?�쏙?�占?�옙 ?�쏙?�품?�쏙???�쏙?�占?�옙?�� ?�쏙?�占?�옙?�쏙?�占�?
+				//long diff = now.getTime() - userFoodExpiDate.getTime();	// ?�쏙?�占?�날�?- ?�쏙?�占?�옙?�쏙?�품 ?�쏙?�占?�옙?�쏙?�占�?
+				long diff = ((Date)savefoodList.get(i).get("savefood_expi_date")).getTime() - now.getTime();
+				long diffDays = diff/(24 * 60 * 60 * 1000); // ?�싻몌옙?�쏙???�쏙?�占?�옙?�쏙???�쏙?�占?�옙 ?�쏙?�占?�몌???�쏙?�짜 ?�쏙?�占?�옙?�쏙???�쏙?�환
+				long danger = expiDate/3;						 // ?�쏙?�占?�옙?�쏙?�占?�옙?�쏙???�쏙?�占?�울?�占?�옙 ?�쏙?�占?�듸???�쏙?�占?�옙?�쏙??1/3 ?�싱몌옙?�싱몌옙 ?�쏙?�占?�옙
+				long normal = expiDate*2/3;				     // 1/3 ?�싱?�옙 2/3 ?�싱몌옙 ?�싱몌옙 ?�쏙?�占?�옙 ?�쏙???�싱?�옙?�쏙???�쏙?�占?�옙
+				if(danger > 14) {								 // ?�쏙?�占?�옙 ?�쏙?�占?�옙?�쏙???�썩간占?�옙 2?�쏙???�십곤옙?�쏙?�占�??�쏙?�占?�옙 ?�썩간占?�옙 2?�쌍뤄옙 ?�쏙?�占?�옙
 					danger = 14;
 				}
 				int risk = 0;
 				if(diffDays < danger) {
 					risk = 0;
 				}
-				else if(diffDays >= danger || diffDays < normal) {
+				else if(diffDays >= danger && diffDays < normal) {
 					risk = 1;
 				}
 				else {
 					risk = 2;
 				}
-				
+				savefoodList.get(i).put("savefood_remain_day", diffDays);
 				savefoodList.get(i).put("savefood_risk", risk);
+				
 			}
 			
 			return savefoodList;
@@ -316,3 +318,4 @@ public class UserFoodService {
 		return null;
 	}
 }
+

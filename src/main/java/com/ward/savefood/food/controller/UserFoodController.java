@@ -34,13 +34,7 @@ public class UserFoodController {
 		if(session.getAttribute("loginInfo") != null) {
 			String memberSeq = fridgeService.getMemberSeq((String) session.getAttribute("loginInfo"));
 			ArrayList<Map<String, Object>> fridgeList = fridgeService.getFridgeList(memberSeq);
-			int[] fridgeSeqList = new int[fridgeList.size()];
-			
-			for(int i = 0; i < fridgeList.size(); i++) {
-				fridgeSeqList[i] = (int)fridgeList.get(i).get("fridge_seq");
-			}
-			
-			ArrayList<Map<String, Object>> saveplaceList = fridgeService.getSaveplaceList(fridgeSeqList);
+			ArrayList<Map<String, Object>> saveplaceList = fridgeService.getSaveplaceList(fridgeList);
 			ArrayList<Map<String, Object>> categoryList = categoryService.getCategoryList();
 			ArrayList<ArrayList<Map<String, Object>>> foodListList = foodService.getAllFoodList();
 			model.addAttribute("fridgeList", fridgeList);

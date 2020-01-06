@@ -30,29 +30,11 @@ public class FridgeController {
 			String memberSeq = fridgeService.getMemberSeq(memberId);
 			
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
-
-			if(fridge.size() != 0) {
-				int[] fridgeSeqList = new int[fridge.size()];
-				
-				for(int i=0; i<fridge.size(); i++) {
-					fridgeSeqList[i] = (Integer) fridge.get(i).get("fridge_seq");
-				}
-				
-				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridgeSeqList);
-				
-				if(saveplace.size() != 0) {
-					int[] saveplaceSeqList = new int[saveplace.size()];
-					
-					for(int j=0; j<saveplace.size(); j++) {
-						saveplaceSeqList[j] = (Integer) saveplace.get(j).get("saveplace_seq");
-					}
-
-					model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplaceSeqList));
-				}
-				model.addAttribute("saveplaceList", saveplace);
-			}
+			ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridge);
+			model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplace));
+			model.addAttribute("saveplaceList", saveplace);
 			model.addAttribute("fridgeList", fridge);
-			
+
 			return "fridge/index";
 		}
 		

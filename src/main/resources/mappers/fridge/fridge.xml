@@ -52,16 +52,20 @@
 	
 	<select id="getSavefoods" resultType="java.util.HashMap">
 		SELECT
-			a.*, b.saveplace_storage_code
+			a.*, b.saveplace_seq, b.saveplace_storage_code, c.fridge_seq, c.fridge_name
 		FROM
 			savefood a
 		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
+		LEFT JOIN fridge c ON b.fridge_seq = c.fridge_seq
 		WHERE
-			<foreach collection="saveplaceSeqList" item="item" separator="or" index="index">
-			a.saveplace_seq = #{item}
+			
+			a.saveplace_seq IN(
+			<foreach collection="saveplace" item="item" separator="," index="index">
+			#{item.saveplace_seq}
 			</foreach>
+			)
 			AND a.is_delete = 'N'
-		ORDER BY a.savefood_expi_date;
+		ORDER BY c.fridge_seq;
 	</select>
 	
 	<select id="getSaveplaceList" parameterType="String" resultType="java.util.HashMap">
