@@ -53,21 +53,57 @@
 	</select>
 	
 	<select id="getSavefoods" resultType="java.util.HashMap">
-		SELECT
-			a.*, b.saveplace_seq, b.saveplace_storage_code, c.fridge_seq, c.fridge_name
+		<![CDATA[
+		SELECT 
+			e.*, 
+			CASE WHEN e.saveplace_storage_code = 1 THEN (CASE WHEN (CASE WHEN e.food_expi_date_frozen*1/3 > 14 THEN 14 
+													 					ELSE e.food_expi_date_frozen*1/3 END) > e.savefood_remain_day THEN 0
+													 		  WHEN (CASE WHEN e.food_expi_date_frozen*1/3 > 14 THEN 14 
+													 					ELSE e.food_expi_date_frozen*1/3 END)  <= e.savefood_remain_day AND e.savefood_remain_day < e.food_expi_date_frozen*2/3 THEN 1
+													 		  ELSE 2 END)
+				 WHEN e.saveplace_storage_code = 2 THEN (CASE WHEN (CASE WHEN e.food_expi_date*1/3 > 14 THEN 14 
+														      ELSE e.food_expi_date*1/3 END) > e.savefood_remain_day THEN 0
+															  WHEN (CASE WHEN e.food_expi_date*1/3 > 14 THEN 14 
+																		ELSE e.food_expi_date*1/3 END) <= e.savefood_remain_day AND e.savefood_remain_day < e.food_expi_date*2/3 THEN 1
+															  ELSE 2 END)
+			     WHEN e.saveplace_storage_code = 3 THEN (CASE WHEN (CASE WHEN e.food_expi_date_room*1/3 > 14 THEN 14 
+														      ELSE e.food_expi_date_room*1/3 END) > e.savefood_remain_day THEN 0
+															  WHEN (CASE WHEN e.food_expi_date_room*1/3 > 14 THEN 14 
+																		ELSE e.food_expi_date_room*1/3 END) <= e.savefood_remain_day AND e.savefood_remain_day < e.food_expi_date_room*2/3 THEN 1
+															  ELSE 2 END)
+				 END AS savefood_risk
 		FROM
+		(SELECT
+			a.savefood_name,
+			a.savefood_seq,
+			a.savefood_expi_date,
+			a.savefood_quantity, 
+			b.saveplace_seq, 
+			b.saveplace_storage_code, 
+			c.fridge_seq, 
+			c.fridge_name,
+			d.food_seq,
+			d.food_img,
+			d.food_expi_date_frozen,
+			d.food_expi_date,
+			d.food_expi_date_room,
+			DATEDIFF(a.savefood_expi_date, NOW()) AS savefood_remain_day		
+		FROM						
 			savefood a
 		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
+		LEFT JOIN food d ON a.food_seq = d.food_seq
 		LEFT JOIN fridge c ON b.fridge_seq = c.fridge_seq
 		WHERE
-			
+			]]>
 			a.saveplace_seq IN(
 			<foreach collection="saveplace" item="item" separator="," index="index">
 			#{item.saveplace_seq}
 			</foreach>
 			)
 			AND a.is_delete = 'N'
-		ORDER BY c.fridge_seq;
+		) e
+		ORDER BY e.fridge_seq, savefood_remain_day;
+		
 	</select>
 	
 	<select id="getSaveplaceList" parameterType="String" resultType="java.util.HashMap">

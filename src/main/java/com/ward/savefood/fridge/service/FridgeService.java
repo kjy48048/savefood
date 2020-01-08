@@ -62,16 +62,19 @@ public class FridgeService {
 		
 		ArrayList<Map<String, Object>> savefoodList1 = fridgeDao.getSavefoods(selectSavefoods);
 
-		ArrayList<Map<String, Object>> savefoodList2 = userFoodService.calculateFoodRisk(savefoodList1);
+		//ArrayList<Map<String, Object>> savefoodList2 = userFoodService.calculateFoodRisk(savefoodList1);
+		for(Map food : savefoodList1) {
+			System.out.println(food);
+		}
 		
 		ArrayList<Map<String, Object>> dashboardList = new ArrayList<>();
-		long danger_expi_date = 9999999;
-		long normal_expi_date = 9999999;
-		long safe_expi_date = 9999999;
-		for(int i = 0; i<savefoodList2.size(); i++) {
-			if(i == 0 || savefoodList2.get(i).get("fridge_seq") != savefoodList2.get(i-1).get("fridge_seq")) {
+		int danger_expi_date = 9999999;
+		int normal_expi_date = 9999999;
+		int safe_expi_date = 9999999;
+		for(int i = 0; i<savefoodList1.size(); i++) {
+			if(i == 0 || savefoodList1.get(i).get("fridge_seq") != savefoodList1.get(i-1).get("fridge_seq")) {
 				Map<String, Object> dashboard = new HashMap<>();
-				dashboard.put("fridge_seq", savefoodList2.get(i).get("fridge_seq"));
+				dashboard.put("fridge_seq", savefoodList1.get(i).get("fridge_seq"));
 				dashboard.put("danger_cnt", 0);
 				dashboard.put("danger_food_name", "");
 				dashboard.put("normal_cnt", 0);
@@ -79,27 +82,30 @@ public class FridgeService {
 				dashboard.put("safe_cnt", 0);
 				dashboard.put("safe_food_name", "");
 				dashboardList.add(dashboard);
+				danger_expi_date = 9999999;
+				normal_expi_date = 9999999;
+				safe_expi_date = 9999999;
 			}
 			int index = dashboardList.size()-1;
-			if((int)savefoodList2.get(i).get("savefood_risk") == 0) {
+			if((int)savefoodList1.get(i).get("savefood_risk") == 0) {
 				dashboardList.get(index).put("danger_cnt", (int)dashboardList.get(index).get("danger_cnt")+1);
-				if(danger_expi_date > (long)savefoodList2.get(i).get("savefood_remain_day")) {
-					dashboardList.get(index).put("danger_food_name", savefoodList2.get(i).get("savefood_name"));
-					danger_expi_date = (long)savefoodList2.get(i).get("savefood_remain_day");
+				if(danger_expi_date > (int)savefoodList1.get(i).get("savefood_remain_day")) {
+					dashboardList.get(index).put("danger_food_name", savefoodList1.get(i).get("savefood_name"));
+					danger_expi_date = (int)savefoodList1.get(i).get("savefood_remain_day");
 				}
 			}
-			else if((int)savefoodList2.get(i).get("savefood_risk") == 1) {
+			else if((int)savefoodList1.get(i).get("savefood_risk") == 1) {
 				dashboardList.get(index).put("normal_cnt", (int)dashboardList.get(index).get("normal_cnt")+1);
-				if(normal_expi_date > (long)savefoodList2.get(i).get("savefood_remain_day")) {
-					dashboardList.get(index).put("normal_food_name", savefoodList2.get(i).get("savefood_name"));
-					normal_expi_date = (long)savefoodList2.get(i).get("savefood_remain_day");
+				if(normal_expi_date > (int)savefoodList1.get(i).get("savefood_remain_day")) {
+					dashboardList.get(index).put("normal_food_name", savefoodList1.get(i).get("savefood_name"));
+					normal_expi_date = (int)savefoodList1.get(i).get("savefood_remain_day");
 				}
 			}
 			else {
 				dashboardList.get(index).put("safe_cnt", (int)dashboardList.get(index).get("safe_cnt")+1);
-				if(safe_expi_date > (long)savefoodList2.get(i).get("savefood_remain_day")) {
-					dashboardList.get(index).put("safe_food_name", savefoodList2.get(i).get("savefood_name"));
-					safe_expi_date = (long)savefoodList2.get(i).get("savefood_remain_day");
+				if(safe_expi_date > (int)savefoodList1.get(i).get("savefood_remain_day")) {
+					dashboardList.get(index).put("safe_food_name", savefoodList1.get(i).get("savefood_name"));
+					safe_expi_date = (int)savefoodList1.get(i).get("savefood_remain_day");
 				}
 			}
 			
