@@ -56,16 +56,19 @@ public class FridgeService {
 		return fridgeDao.getSaveplace(selectFridge);
 	}
 
-	public ArrayList<Map<String, Object>> getSavefoodList(ArrayList<Map<String, Object>> saveplace) {
+	// get saveplaceList - fridge/index.jsp �뿉�꽌 �솢�슜
+	public ArrayList<Map<String, Object>> getSavefoods(ArrayList<Map<String, Object>> saveplace) {
+		Map<String, Object> selectSavefoods = new HashMap<>();
+		selectSavefoods.put("saveplace", saveplace);
+		
+		return fridgeDao.getSavefoods(selectSavefoods);
+	}
+	
+	public ArrayList<Map<String, Object>> getFridgeDashboard(ArrayList<Map<String, Object>> saveplace) {
 		Map<String, Object> selectSavefoods = new HashMap<>();
 		selectSavefoods.put("saveplace", saveplace);
 		
 		ArrayList<Map<String, Object>> savefoodList1 = fridgeDao.getSavefoods(selectSavefoods);
-
-		//ArrayList<Map<String, Object>> savefoodList2 = userFoodService.calculateFoodRisk(savefoodList1);
-		for(Map food : savefoodList1) {
-			System.out.println(food);
-		}
 		
 		ArrayList<Map<String, Object>> dashboardList = new ArrayList<>();
 		int danger_expi_date = 9999999;

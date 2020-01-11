@@ -21,6 +21,7 @@
 
 	<!-- Custom styles for this template-->
 	<link href="../../static/css/sb-admin.css" rel="stylesheet">
+	<link href="../../static/css/fridge-style.css" rel="stylesheet">
 
 
 	<style type="text/css">
@@ -42,196 +43,58 @@
 		<jsp:include page="../common/sidebar.jsp"/>
 
 		<div id="content-wrapper">
-
 			<div class="container-fluid">
-
-<!-- 				Breadcrumbs
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">냉장</a>
-					</li>
-					<li class="breadcrumb-item active">Overview</li>
-				</ol>
-
-				Icon Cards
-				<div class="row">
-                    <div class="col-xl-2 col-sm-4 mb-3 dropdown">
-						<div class="card text-white bg-danger o-hidden h-70" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">서울우유</div>
-							</div>
-						</div>
-						<div class="dropdown-menu" aria-labelledby="pagesDropdown">
-							<h6 class="dropdown-header">카테고리 : 유제품>우유</h6>
-							<h6 class="dropdown-header">유통기한 : 2019/11/20</h6>
-							<button>수정</button>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-danger o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">바이오요거트</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-warning o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">계란</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">삼다수</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">테라</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">고춧가루</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">배추김치</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">두부</div>
-							</div>
-						</div>
-					</div>
+				<c:set var="saveplaceSeq" value="0"/>
+				<c:forEach items="${savefoodList}" var="savefood" varStatus="status"> 
+				<c:if test="${saveplaceSeq == 0 }">
+				<c:set var="saveplaceSeq" value="${savefood.saveplace_seq }"/>
+				<div class="saveplace-container">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item ml-auto ml-md-0" style="width: auto;">
+							<!-- <a href="#" id="saveplaceName${saveplace.saveplace_seq}">${saveplace.saveplace_name}</a> -->
+								<input id="saveplaceName${savefood.saveplace_seq}" type="text"
+									style="border:0px; background-color: transparent;" 
+									value="${savefood.saveplace_name}" disabled/>
+						</li>
+						<li class="ml-auto mr-md-0" style="color: #6c757d;">
+							<i id="saveplaceEdit${savefood.saveplace_seq}"
+								class="far fa-edit" onclick="updateSaveplace(${savefood.saveplace_seq})"></i>
+							<i class="far fa-trash-alt" onclick="deleteSaveplace(${savefood.saveplace_seq})"></i>
+						</li>
+					</ol>
+					<div class="food-container">
+				</c:if>
+				<c:if test="${saveplaceSeq != 0 && saveplaceSeq != savefood.saveplace_seq }">
+				<c:set var="saveplaceSeq" value="${savefood.saveplace_seq }"/>
 				</div>
-				
-				Breadcrumbs
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item">
-						<a href="#">냉동</a>
-					</li>
-					<li class="breadcrumb-item active">Overview</li>
-				</ol>
-
-				Icon Cards
-				<div class="row">
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">투게더</div>
-							</div>
-						</div>
+				</div>
+				<div class="saveplace-container">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item ml-auto ml-md-0" style="width: auto;">
+							<!-- <a href="#" id="saveplaceName${saveplace.saveplace_seq}">${saveplace.saveplace_name}</a> -->
+								<input id="saveplaceName${savefood.saveplace_seq}" type="text"
+									style="border:0px; background-color: transparent;" 
+									value="${savefood.saveplace_name}" disabled/>
+						</li>
+						<li class="ml-auto mr-md-0" style="color: #6c757d;">
+							<i id="saveplaceEdit${savefood.saveplace_seq}"
+								class="far fa-edit" onclick="updateSaveplace(${savefood.saveplace_seq})"></i>
+							<i class="far fa-trash-alt" onclick="deleteSaveplace(${savefood.saveplace_seq})"></i>
+						</li>
+					</ol>
+					<div class="food-wrapper">
+				</c:if>
+					<div class="food">
+						<input type="checkbox" value="${savefood.savefood_seq }" id="delete-savefood-${savefood.savefood_seq }" class="checkbox-none delete-savefood" disabled/>
+						<label for="delete-savefood-${savefood.savefood_seq }">
+							<img src="${pageContext.request.contextPath}${savefood.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'"/>
+							<span>${pageContext.request.contextPath}${savefood.savefood_name}</span>
+						</label>
 					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">크루아상생지</div>
-							</div>
+					<c:if test="${status.last}">
 						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">소고기(국거리)</div>
-							</div>
 						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">삼겹살</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">모짜렐라치즈</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-2 col-sm-4 mb-3">
-						<div class="card text-white bg-success o-hidden h-70">
-							<div class="card-body">
-								<div class="card-body-icon">
-									<i class="fas fa-fw"></i>
-								</div>
-								<div class="mr-auto">만두</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
-				
-				<!-- Breadcrumbs-->
-				<c:forEach items="${saveplaceList}" var="saveplace" varStatus="list"> 
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item ml-auto ml-md-0" style="width: auto;">
-						<!-- <a href="#" id="saveplaceName${saveplace.saveplace_seq}">${saveplace.saveplace_name}</a> -->
-						<a href="#">
-							<input id="saveplaceName${saveplace.saveplace_seq}" type="text"
-								style="border:0px; background-color: transparent;" 
-								value="${saveplace.saveplace_name}" disabled/>
-						</a>	
-					</li>
-					<li class="ml-auto mr-md-0" style="color: #6c757d;">
-						<i id="saveplaceEdit${saveplace.saveplace_seq}"
-							class="far fa-edit" onclick="updateSaveplace(${saveplace.saveplace_seq})"></i>
-						<i class="far fa-trash-alt" onclick="deleteSaveplace(${saveplace.saveplace_seq})"></i>
-					</li>
-					
-				</ol>
+					</c:if>
 				</c:forEach>					
 				
 				

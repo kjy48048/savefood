@@ -32,7 +32,7 @@ public class FridgeController {
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
 			if(fridge.size() != 0) {
 				ArrayList<Map<String, Object>> saveplace = fridgeService.getSaveplaceList(fridge);
-				model.addAttribute("savefoodList", fridgeService.getSavefoodList(saveplace));
+				model.addAttribute("savefoodList", fridgeService.getFridgeDashboard(saveplace));
 				model.addAttribute("saveplaceList", saveplace);
 			}
 			model.addAttribute("fridgeList", fridge);
@@ -47,13 +47,22 @@ public class FridgeController {
 	public String fridge(Model model, HttpServletRequest request, HttpSession session) throws Exception {
 		if(session.getAttribute("loginInfo") != null) {
 			
-			String fridgeSeq = request.getParameter("fridge");
+			String memberId = session.getAttribute("loginInfo").toString();
+			String memberSeq = fridgeService.getMemberSeq(memberId);
 			
-			model.addAttribute("storage", fridgeService.getStorage());
-			model.addAttribute("fridgeSeq", Integer.parseInt(fridgeSeq));
-			model.addAttribute("saveplaceList", fridgeService.getSaveplaceList(fridgeSeq));
-
-			return "fridge/fridge";
+			String fridgeSeq = request.getParameter("fridge");
+			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
+			fridge.removeIf(n -> (int)n.get("fridge_seq") != Integer.parseInt(fridgeSeq));
+			
+			if(fridge.size() > 0) {
+				model.addAttribute("storage", fridgeService.getStorage());
+				ArrayList<Map<String, Object>> saveplaceList = fridgeService.getSaveplaceList(fridge);
+				model.addAttribute("savefoodList", fridgeService.getSavefoods(saveplaceList));
+				
+				return "fridge/fridge";
+			}	
+			
+			return "fridge";
 		}
 		
 		return "redirect:/view/member/login";

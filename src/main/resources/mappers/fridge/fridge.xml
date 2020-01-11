@@ -79,6 +79,7 @@
 			a.savefood_expi_date,
 			a.savefood_quantity, 
 			b.saveplace_seq, 
+			b.saveplace_name,
 			b.saveplace_storage_code, 
 			c.fridge_seq, 
 			c.fridge_name,
@@ -102,7 +103,7 @@
 			)
 			AND a.is_delete = 'N'
 		) e
-		ORDER BY e.fridge_seq, savefood_remain_day;
+		ORDER BY e.fridge_seq, e.saveplace_seq, savefood_remain_day;
 		
 	</select>
 	
@@ -138,12 +139,15 @@
 	
 	<update id="deleteSaveplace" parameterType="java.util.HashMap">
 		UPDATE
-			saveplace
+			savefood a
+		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
 		SET
-			is_delete = 'Y',
-			modify_date = now()
+			a.is_delete = 'Y',
+			a.modify_date = now(),
+			b.is_delete = 'Y',
+			b.modify_date = now()
 		WHERE
-			saveplace_seq = #{saveplaceSeq};
+			b.saveplace_seq = #{saveplaceSeq};
 	</update>
 	
 </mapper>

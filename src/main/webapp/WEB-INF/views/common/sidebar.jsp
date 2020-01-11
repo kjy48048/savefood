@@ -30,7 +30,7 @@
 		else{
 			target = document.querySelector('.sidebar-home');
 		}
-		target.style.background = 'orange';
+		target.style.background = '#007BFF';
 		target.className += " active";
 	}
 	
