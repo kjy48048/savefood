@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.ward.savefood.admin.service.CategoryService;
+import com.ward.savefood.admin.service.FoodService;
+import com.ward.savefood.food.service.UserFoodService;
 import com.ward.savefood.fridge.service.FridgeService;
 
 @Controller
@@ -21,6 +24,8 @@ public class FridgeController {
 
 	@Autowired
 	private FridgeService fridgeService;
+	@Autowired
+	private CategoryService categoryService;
 	
 	@GetMapping("")
 	public String briefFridge(Model model, HttpSession session) throws Exception {
@@ -52,12 +57,16 @@ public class FridgeController {
 			
 			String fridgeSeq = request.getParameter("fridge");
 			ArrayList<Map<String, Object>> fridge = fridgeService.getFridgeList(memberSeq);
+			model.addAttribute("fridgeList", fridge.clone());
+			model.addAttribute("saveplaceList", fridgeService.getSaveplaceList(fridge));
+			model.addAttribute("categoryList", categoryService.getCategoryList());
 			fridge.removeIf(n -> (int)n.get("fridge_seq") != Integer.parseInt(fridgeSeq));
 			
 			if(fridge.size() > 0) {
 				model.addAttribute("storage", fridgeService.getStorage());
 				ArrayList<Map<String, Object>> saveplaceList = fridgeService.getSaveplaceList(fridge);
-				model.addAttribute("savefoodList", fridgeService.getSavefoods(saveplaceList));
+				ArrayList<Map<String, Object>> savefoodList = fridgeService.getSavefoods(saveplaceList);
+				model.addAttribute("savefoodList", savefoodList);
 				
 				return "fridge/fridge";
 			}	

@@ -67,7 +67,7 @@
 								<div class="row">
 									<c:forEach items="${savefoodList}" var="savefood">
 										<c:if test="${savefood.fridge_seq == fridge.fridge_seq}">
-					                    <div class="col-xl-3 col-sm-6 mb-3">
+					                    <div class="col-xl-3 col-sm-4 mb-3">
 											<div class="card text-white bg-danger o-hidden h-100">
 												<a class="none-style-a-tag" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">
 												<div class="card-body">
@@ -76,7 +76,7 @@
 													</div>
 													<c:choose>
 														<c:when test="${savefood.danger_cnt != 0}">
-														<div class="mr-5">${savefood.danger_food_name} 외  ${savefood.danger_cnt} 건</div>
+														<div class="mr-5">${savefood.danger_food_name} 포함 ${savefood.danger_cnt} 건</div>
 														</c:when>
 														<c:otherwise>
 														<div class="mr-5">없음</div>
@@ -86,7 +86,7 @@
 												</a>
 											</div>
 										</div>
-										<div class="col-xl-3 col-sm-6 mb-3">
+										<div class="col-xl-3 col-sm-4 mb-3">
 											<div class="card text-white bg-warning o-hidden h-100">
 											<a class="none-style-a-tag" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">
 												<div class="card-body">
@@ -95,7 +95,7 @@
 													</div>
 													<c:choose>
 														<c:when test="${savefood.normal_cnt != 0}">
-														<div class="mr-5">${savefood.normal_food_name} 외  ${savefood.normal_cnt} 건</div>
+														<div class="mr-5">${savefood.normal_food_name} 포함  ${savefood.normal_cnt} 건</div>
 														</c:when>
 														<c:otherwise>
 														<div class="mr-5">없음</div>
@@ -105,7 +105,7 @@
 												</a>
 											</div>
 										</div>
-										<div class="col-xl-3 col-sm-6 mb-3">
+										<div class="col-xl-3 col-sm-4 mb-3">
 											<div class="card text-white bg-success o-hidden h-100">
 											<a class="none-style-a-tag" href="/view/fridge/fridge?fridge=${fridge.fridge_seq}">
 												<div class="card-body">
@@ -114,7 +114,7 @@
 													</div>
 													<c:choose>
 														<c:when test="${savefood.safe_cnt != 0}">
-														<div class="mr-5">${savefood.safe_food_name} 외  ${savefood.safe_cnt} 건</div>
+														<div class="mr-5">${savefood.safe_food_name} 포함  ${savefood.safe_cnt} 건</div>
 														</c:when>
 														<c:otherwise>
 														<div class="mr-5">없음</div>

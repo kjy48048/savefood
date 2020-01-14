@@ -21,21 +21,30 @@
 .food-wrapper {
 	display: flex;
 	flex-wrap: wrap;
+	min-height: inherit;
+	border: 1px solid grey;
+	border-radius: 5px;
+	padding: 10px;
 }
 
 .food {
+	position:relative;
 	display:inline-block;
 	margin-right: 5px;
 	margin-left: 5px;
 	margin-bottom: 8px;
+	height: fit-content;
 }
+
 
 .food img {
 	width: 50px;
 	height: 50px;
+	cursor: pointer;
 }
 
 .food span {
+	cursor: pointer;
 	display:block;
 	width: 50px;
 	text-align: center;
@@ -57,5 +66,46 @@
 }
 
 .checkbox-none{
+	display: none;
+}
+
+.savefood-remain-day{
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	width: 20px;
+	height: 20px;
+	border: 1px solid white;
+	border-radius: 10px;
+	color: white;
+	text-align:center;
+}
+
+.savefood-remain-day span{
+	display:inline-block;
+	text-align: center;
+	position: relative;
+	width: auto;
+	height: auto;
+	top: -6px;
+}
+
+.savefood-danger {
+	background: #dc3545;
+}
+
+.savefood-warning {
+	background: #ffc107;
+}
+
+.savefood-safe {
+	background: #28a745;
+}
+
+.btn-hidden {
+	display: none;
+}
+
+.unselected-fridge {
 	display: none;
 }

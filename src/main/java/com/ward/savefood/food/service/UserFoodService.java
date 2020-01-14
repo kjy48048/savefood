@@ -3,6 +3,7 @@ package com.ward.savefood.food.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +31,8 @@ import com.ward.savefood.admin.model.UpdateFoodRequest;
 import com.ward.savefood.food.dao.UserFoodDao;
 import com.ward.savefood.food.model.InsertUserFoodRequest;
 import com.ward.savefood.food.model.SelectFoodRequest;
+import com.ward.savefood.food.model.SelectSavefoodRequest;
+import com.ward.savefood.food.model.UpdateUserFoodRequest;
 
 @Service
 public class UserFoodService {
@@ -147,6 +150,133 @@ public class UserFoodService {
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to regist category", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	public ResponseEntity<?> updateSavefood(UpdateUserFoodRequest request) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			int savefoodSeq = request.getSavefoodSeq();
+			String memberSeq = request.getMemberSeq();
+			int saveplaceSeq = request.getSaveplaceSeq();
+			String savefoodName = request.getSavefoodName();
+			String savefoodQuantity = request.getSavefoodQuantity();
+			Date savefoodExpiDate = request.getSavefoodExpiDate();
+			
+			if(StringUtils.isEmpty(memberSeq)|| savefoodSeq == 0 || saveplaceSeq == 0 || StringUtils.isEmpty(savefoodExpiDate)||StringUtils.isEmpty(savefoodName)) {
+				return new ResponseEntity<>("input food update info", HttpStatus.NO_CONTENT);
+			}
+			
+			Map<String, Object> updateUserFood = new HashMap<String, Object>();
+			
+			updateUserFood.put("savefoodSeq", savefoodSeq);
+			updateUserFood.put("savefoodExpiDate", savefoodExpiDate);
+			updateUserFood.put("memberSeq", memberSeq);
+			updateUserFood.put("saveplaceSeq", saveplaceSeq);
+			updateUserFood.put("savefoodName", savefoodName);
+			
+			if(StringUtils.isEmpty(savefoodQuantity)) {
+				updateUserFood.put("savefoodQuantity", 0);
+			}
+			else {
+				updateUserFood.put("savefoodQuantity", savefoodQuantity);
+			}
+			
+			int updateResult = foodDao.updateSavefood(updateUserFood);
+			if(updateResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>("update complete", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to update user food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<?> getSavefood(SelectSavefoodRequest foodRequest){
+		
+		try {			
+			int savefoodSeq = foodRequest.getSavefoodSeq();
+			String memberSeq = foodRequest.getMemberSeq();		
+			
+			if(StringUtils.isEmpty(memberSeq) || savefoodSeq == 0) {
+				return new ResponseEntity<>("input food select info", HttpStatus.NO_CONTENT);
+			}
+			
+			Map<String, Object> selectSavefood = new HashMap<>();
+			selectSavefood.put("savefoodSeq", savefoodSeq);
+			selectSavefood.put("memberSeq", memberSeq);
+			Map<String, Object> savefood = foodDao.getSavefood(selectSavefood);
+			return new ResponseEntity<>(savefood, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>("fail to select food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+
+	public ResponseEntity<?> getExpiDate(SelectSavefoodRequest foodRequest){
+		
+		try {			
+			int savefoodSeq = foodRequest.getSavefoodSeq();
+			int storageCode = foodRequest.getStorageCode();
+			String memberSeq = foodRequest.getMemberSeq();		
+			
+			if(StringUtils.isEmpty(memberSeq) || savefoodSeq == 0) {
+				return new ResponseEntity<>("input food select info", HttpStatus.NO_CONTENT);
+			}
+			
+			Map<String, Object> selectSavefood = new HashMap<>();
+			selectSavefood.put("savefoodSeq", savefoodSeq);
+			selectSavefood.put("memberSeq", memberSeq);
+			selectSavefood.put("storageCode", storageCode);
+			Map<String, Object> savefood = foodDao.getExpiDate(selectSavefood);
+			int remainDay = 0;
+			int orgStorageDate = 0;
+			int changeStorageDate = 0;
+			if((int)savefood.get("saveplace_storage_code") == 1) {
+				orgStorageDate = (int)savefood.get("food_expi_date_frozen");
+			}
+			else if((int)savefood.get("saveplace_storage_code") == 2) {
+				orgStorageDate = (int)savefood.get("food_expi_date");
+			}
+			else if((int)savefood.get("saveplace_storage_code") == 3) {
+				orgStorageDate = (int)savefood.get("food_expi_date_room");
+			}
+			
+			if(storageCode == 1) {
+				changeStorageDate = (int)savefood.get("food_expi_date_frozen");
+			}
+			else if(storageCode == 2) {
+				changeStorageDate = (int)savefood.get("food_expi_date");
+			}
+			else if(storageCode == 3) {
+				changeStorageDate = (int)savefood.get("food_expi_date_room");
+			}
+			
+			if( orgStorageDate == 0 || changeStorageDate == 0) {
+				remainDay = (int)savefood.get("savefood_remain_day");
+			}
+			else {
+				remainDay = (int)savefood.get("savefood_remain_day")*changeStorageDate/orgStorageDate;
+			}
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.add(Calendar.DATE, remainDay);
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String expiDate = df.format(cal.getTime());
+			
+			return new ResponseEntity<>(expiDate, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>("fail to select food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 	
 	public ResponseEntity<?> getFood(SelectFoodRequest foodRequest){
 		

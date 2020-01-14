@@ -11,7 +11,17 @@
 	
 	</insert>
 	 
-	<update id="updateUserFood" parameterType="java.util.HashMap">
+	<update id="updateSavefood" parameterType="java.util.HashMap">
+		UPDATE
+			savefood
+		SET
+			savefood_name = #{savefoodName},
+			saveplace_seq = #{saveplaceSeq},
+			savefood_quantity = #{savefoodQuantity},
+			savefood_expi_date = #{savefoodExpiDate},
+			modify_date = now()
+		WHERE savefood_seq = #{savefoodSeq}
+		  AND member_seq = #{memberSeq}; 
 	</update>
 	
 	<update id="deleteUserFood" parameterType="java.util.HashMap">
@@ -37,6 +47,20 @@
 		ORDER BY c.category_seq, c.food_name;
 	</select>
 	
+	<select id="getExpiDate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			DATEDIFF(a.savefood_expi_date, NOW()) AS savefood_remain_day,
+			b.food_expi_date_frozen,
+			b.food_expi_date,
+			b.food_expi_date_room,
+			c.saveplace_storage_code
+		FROM savefood a
+		LEFT JOIN food b ON a.food_seq = b.food_seq
+		LEFT JOIN saveplace c ON a.saveplace_seq = c.saveplace_seq
+		WHERE
+			a.savefood_seq = #{savefoodSeq};
+	</select>
+	
 	<select id="selectFood" parameterType="String" resultType="java.util.HashMap">
 		SELECT
 			food_seq,
@@ -59,6 +83,23 @@
 			is_delete = 'N';
 	</select>
 	
+	<select id="getSavefood" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			a.savefood_name,
+			DATE_FORMAT(a.savefood_expi_date, '%Y-%m-%d') as savefood_expi_date,
+			a.savefood_quantity,
+			a.saveplace_seq,
+			b.fridge_seq,
+			c.food_name,
+			d.category_name
+		FROM savefood a
+		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
+		LEFT JOIN food c ON a.food_seq = c.food_seq
+		LEFT JOIN category d ON c.category_seq = d.category_seq
+		WHERE a.savefood_seq = #{savefoodSeq}
+		  AND a.member_seq = #{memberSeq}
+		  AND a.is_delete = 'N';	
+	</select>
 	
 	<select id="getFoodList" parameterType="String" resultType="java.util.HashMap">
 		SELECT

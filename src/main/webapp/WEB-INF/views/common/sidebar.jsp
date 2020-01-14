@@ -31,7 +31,14 @@
 			target = document.querySelector('.sidebar-home');
 		}
 		target.style.background = '#007BFF';
-		target.className += " active";
+		target.classList.add('active');
+
+		if(!matchMedia("screen and (min-width: 768px)").matches){
+			var pageTop = document.querySelector('#page-top');
+			var sidebar = document.querySelector('.sidebar');
+			pageTop.classList.add('sidebar-toggled');
+			sidebar.classList.add('toggled')
+		}
 	}
 	
 </script>

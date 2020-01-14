@@ -32,7 +32,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" >
 
 	<!-- header 영역 -->
 	<jsp:include page="../common/header.jsp"/>
@@ -62,7 +62,7 @@
 							<i class="far fa-trash-alt" onclick="deleteSaveplace(${savefood.saveplace_seq})"></i>
 						</li>
 					</ol>
-					<div class="food-container">
+					<div class="food-wrapper">
 				</c:if>
 				<c:if test="${saveplaceSeq != 0 && saveplaceSeq != savefood.saveplace_seq }">
 				<c:set var="saveplaceSeq" value="${savefood.saveplace_seq }"/>
@@ -84,13 +84,37 @@
 					</ol>
 					<div class="food-wrapper">
 				</c:if>
+					<c:if test="${savefood.savefood_seq != null}">
 					<div class="food">
 						<input type="checkbox" value="${savefood.savefood_seq }" id="delete-savefood-${savefood.savefood_seq }" class="checkbox-none delete-savefood" disabled/>
 						<label for="delete-savefood-${savefood.savefood_seq }">
 							<img src="${pageContext.request.contextPath}${savefood.food_img}" onerror="this.src='${pageContext.request.contextPath}/resources/img/not-found.png'"/>
 							<span>${pageContext.request.contextPath}${savefood.savefood_name}</span>
+							<c:choose>
+								<c:when test="${savefood.savefood_risk == 0 }">
+									<div class="savefood-remain-day savefood-danger">
+								</c:when>
+								<c:when test="${savefood.savefood_risk == 1 }">
+									<div class="savefood-remain-day savefood-warning">
+								</c:when>
+								<c:when test="${savefood.savefood_risk == 2 }">
+									<div class="savefood-remain-day savefood-safe">
+								</c:when>
+							</c:choose>	
+								<span>
+								<c:choose>
+									<c:when test="${savefood.savefood_remain_day > 99}">
+										+99
+									</c:when>
+									<c:otherwise>
+										${savefood.savefood_remain_day }
+									</c:otherwise>
+								</c:choose>
+								</span>
+							</div>
 						</label>
 					</div>
+					</c:if>
 					<c:if test="${status.last}">
 						</div>
 						</div>
@@ -176,8 +200,80 @@
 	    </div>
 	  </div>
 	</div>
-
-
+	
+	<!-- Saveplace Modal -->
+	<div class="modal fade" id="savefoodModal" data-savefood-seq="" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header" >
+					<h5 class="modal-title" id="exampleModalLabel">식품 정보</h5>
+				</div>
+				<div class="modal-body-flex-row"><span class="modal-label">식품명  </span>
+					<input type="text" id="input-food-name" class="form-control" disabled>
+				</div>
+				<div class="modal-body-flex-row"><span class="modal-label">식품종류  </span>
+					<input type="text" id="input-food-category" class="form-control" disabled>
+					<%-- <select class="input-item" id="input-category-list" disabled>
+							<c:forEach items="${categoryList}" var="category" varStatus="status">
+								<c:choose>
+									<c:when test="${status.count == 1}">
+										<option value='' selected>카테고리 선택</option>
+										<option value="${category.category_seq}">${category.category_name}</option>							
+									</c:when>
+									<c:otherwise>
+										<option value="${category.category_seq}">${category.category_name}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<select class="input-item" id="input-food-list" disabled>
+							
+						</select> --%>
+				</div>
+				<div class="modal-body-flex-row"><span class="modal-label">*저장장소  </span>
+					<select class="input-item" id="input-fridge-list" disabled>
+							<c:forEach items="${fridgeList}" var="fridge" varStatus="status">
+								<c:choose>
+									<c:when test="${status.count == 1}">
+										<option value="${fridge.fridge_seq}" selected>${fridge.fridge_name}</option>
+										<c:set var="inputFridgeSeq" value="${fridge.fridge_seq}"/>							
+									</c:when>
+									<c:otherwise>
+										<option value="${fridge.fridge_seq}">${fridge.fridge_name}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<select class="input-item" id="input-saveplace-list" disabled>
+							<c:forEach items="${saveplaceList}" var="saveplace" varStatus="status">
+								<c:choose>
+									<c:when test="${inputFridgeSeq == saveplace.fridge_seq && status.count == 1}">
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}" selected>${saveplace.saveplace_name}</option>									
+									</c:when>
+									<c:when test="${inputFridgeSeq == saveplace.fridge_seq}">
+										<option data-fridge-seq="${saveplace.fridge_seq}" data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>									
+									</c:when>
+									<c:otherwise>
+										<option class="unselected-fridge" data-fridge-seq="${saveplace.fridge_seq}"  data-storage-code="${saveplace.saveplace_storage_code }"  value="${saveplace.saveplace_seq}">${saveplace.saveplace_name}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+				</div>
+				<div class="modal-body-flex-row"><span class="modal-label">유통기한  </span>
+					<input type="date" id="input-expi-date" class="form-control"  placeholder="" max="9999-12-31" disabled>
+				</div>
+				<div class="modal-body-flex-row"><span class="modal-label">식품량  </span>
+					<input type="text" id="input-food-quantity" class="form-control" placeholder="0" maxlength="20" disabled>
+				</div>
+				<div class="modal-footer">
+					<button id="savefood-cancel-btn" class="btn btn-secondary btn-hidden" type="button" data-dismiss="modal">취소</button>
+					<button id="savefood-update-btn" type="button" class="btn btn-success btn-update" onclick="savefoodUpdate()">수정</button>
+					<button id="savefood-delete-btn" type="button" class="btn btn-primary" onclick="savefoodDelete()">삭제</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- Logout Modal-->
 	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -230,6 +326,194 @@
 			$("#saveplaceModal").modal();
 		} 
 
+	 	$("#input-fridge-list").on("change", function(e){
+			var fridgeSeq = $(e.target).val();
+			saveplaceListFilter(fridgeSeq);
+			$("#input-saveplace-list").change();
+		})
+		
+		function saveplaceListFilter(fridgeSeq){
+	 		var count = 0;
+			$("#input-saveplace-list").children("option").each(function(i, saveplace){
+				if(saveplace.dataset.fridgeSeq == fridgeSeq){
+						saveplace.className = null;
+						if(count == 0){
+							saveplace.selected = true;
+							}
+						count++;
+				}
+				else{
+						saveplace.className = "unselected-fridge";
+				}
+			})
+	 	}
+	
+		$("#input-saveplace-list").on("change", function(e){
+			var savefoodSeq = $("#savefoodModal").get(0).dataset.savefoodSeq;
+			var saveplaceSeq = $("#input-saveplace-list").val();
+			var storageCode = $("#input-saveplace-list").children("option[value='"+saveplaceSeq+"']").get(0).dataset.storageCode;
+			changeExpiDate(savefoodSeq, storageCode);
+		});
+
+		function changeExpiDate(savefoodSeq, storageCode){
+			if(!savefoodSeq){
+				alert("잘못된 접근입니다.");
+			}
+
+			var dataParam = {
+					"savefoodSeq":savefoodSeq,
+					"storageCode":storageCode
+			}
+
+			 $.ajax({
+					url:'/api/food/savefood/expidate',
+					type:'post',
+					dataType:'text',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					 success:function(data,textStatus,jqXHR){
+			        	 if(jqXHR.status == "204"){
+			        		 	alert(data.responseText);
+				            }
+			            else{
+								$("#input-expi-date").val(data);
+				            }
+					},error:function(data){
+						alert(data.responseText);
+					}
+			});
+			
+		}
+
+		$(".food").on("click", function(e){
+			var target = $(e.target).is(".food") ? $(e.target) : $(e.target).closest(".food");
+			var savefoodSeq = target.children("input[type='checkbox']").val();
+			$("#savefoodModal").get(0).dataset.savefoodSeq = savefoodSeq;
+			savefoodModalInit(savefoodSeq);
+			$("#savefoodModal").modal();	
+		})
+		
+		function savefoodModalInit(savefoodSeq){
+			$("#input-food-name").attr("disabled", "true");
+			$("#input-fridge-list").attr("disabled", "true");
+			$("#input-saveplace-list").attr("disabled", "true");
+			$("#input-expi-date").attr("disabled", "true");
+			$("#input-food-quantity").attr("disabled", "true");
+			
+			if(!savefoodSeq) {
+				alert("잘못된 접근입니다.");
+			}
+			
+			var dataParam = {
+					"savefoodSeq":savefoodSeq
+			}
+			
+			 $.ajax({
+					url:'/api/food/savefood',
+					type:'post',
+					dataType:'json',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					 success:function(data,textStatus,jqXHR){
+			        	 if(jqXHR.status == "204"){
+			        		 	alert(data.responseText);
+				            }
+			            else{
+			            		$("#input-food-name").val(data.savefood_name);
+			            		$("#input-food-name").attr("placeholder", data.food_name);
+			            		$("#input-food-category").val(data.category_name + "  >  " + data.food_name);
+			            		$("#input-fridge-list").val(data.fridge_seq);
+			            		saveplaceListFilter(data.fridge_seq);
+			            		$("#input-saveplace-list").val(data.saveplace_seq);
+			            		$("#input-expi-date").val(data.savefood_expi_date);
+			            		$("#input-food-quantity").val(data.savefood_quantity);
+			            		$("#input-food-name").get(0).dataset.orgVal = data.savefood_name;
+			            		$("#input-fridge-list").get(0).dataset.orgVal = data.fridge_seq;
+			            		$("#input-saveplace-list").get(0).dataset.orgVal = data.saveplace_seq;
+			            		$("#input-expi-date").get(0).dataset.orgVal = data.savefood_expi_date;
+			            		$("#input-food-quantity").get(0).dataset.orgVal = data.savefood_quantity;
+			            		$("#savefood-cancel-btn").addClass("btn-hidden");
+			            		$("#savefood-update-btn").addClass("btn-update");
+			            		$("#savefood-update-btn").text("수정");
+				            }
+					},error:function(data){
+						alert(data.responseText);
+					}
+				 });
+			};
+
+		function savefoodUpdate(){
+			if($("#savefood-update-btn").is(".btn-update")){
+				$("#savefood-cancel-btn").removeClass("btn-hidden");
+				$("#savefood-update-btn").removeClass("btn-update");
+				$("#savefood-update-btn").text("저장");
+				$("#input-food-name").removeAttr("disabled");
+				$("#input-fridge-list").removeAttr("disabled");
+				$("#input-saveplace-list").removeAttr("disabled");
+				$("#input-expi-date").removeAttr("disabled");
+				$("#input-food-quantity").removeAttr("disabled");
+			}
+			else{
+				if(
+				$("#input-food-name").get(0).dataset.orgVal != $("#input-food-name").val() ||
+				$("#input-fridge-list").get(0).dataset.orgVal !=  $("#input-fridge-list").val() ||
+        		$("#input-saveplace-list").get(0).dataset.orgVal != $("#input-saveplace-list").val() ||
+        		$("#input-expi-date").get(0).dataset.orgVal != $("#input-expi-date").val() ||
+        		$("#input-food-quantity").get(0).dataset.orgVal != $("#input-food-quantity").val()
+        		) {
+					var savefoodSeq = $("#savefoodModal").get(0).dataset.savefoodSeq;
+					var savefoodName = $("#input-food-name").val();
+					var saveplaceSeq = $("#input-saveplace-list").val();
+					var foodExpiDate = $("#input-expi-date").val();
+					var foodQuantity = $("#input-food-quantity").val();
+
+					if(!savefoodSeq) {
+						alert("잘못된 접근입니다.");
+						return;
+					}
+					if(!savefoodName) {
+						savefoodName = $("#input-food-name").attr("placeholder");
+					}
+					if(!saveplaceSeq) {
+						alert("저장장소를 선택해주세요.");
+						$("#input-saveplace-list").focus();
+						return;
+					}
+					if(!foodExpiDate) {
+						alert("유통기한을 입력해주세요.");
+						$("#input-expi-date").focus();
+						return;
+					}
+	        		
+					var dataParam = {
+							"savefoodSeq":savefoodSeq,
+							"savefoodName":savefoodName,
+							"saveplaceSeq":saveplaceSeq,
+							"savefoodExpiDate":foodExpiDate,
+							"savefoodQuantity":foodQuantity
+					}
+
+					 $.ajax({
+							url:'/api/food/savefood/update',
+							type:'post',
+							dataType:'text',
+							contentType:'application/json',
+							data:JSON.stringify(dataParam),
+							 success:function(data,textStatus,jqXHR){
+					        	 if(jqXHR.status == "204"){
+					        		 	alert(data.responseText);
+						            }
+					            else{
+										location.reload();
+						            }
+							},error:function(data){
+								alert(data.responseText);
+							}
+					});
+        		}
+			}
+		}
+		
 		// 보관장소 등록 처리
 		function regSaveplace() {
 			var saveplace = $("#inputSaveplace").val();

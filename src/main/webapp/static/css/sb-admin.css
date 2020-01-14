@@ -10682,6 +10682,8 @@ body {
   width: 90px !important;
   background-color: #212529;
   min-height: calc(100vh - 56px);
+  position:absolute;
+  z-index: 99;
 }
 
 .sidebar .nav-item:last-child {
@@ -10732,6 +10734,7 @@ body {
 @media (min-width: 768px) {
   .sidebar {
     width: 225px !important;
+    position:relative;
   }
   .sidebar .nav-item .nav-link {
     display: block;

@@ -365,7 +365,7 @@
 				var dataParam = {
 						"saveplaceSeq":saveplaceSeq,
 						"foodSeq":foodSeq,
-						"stoeageCode":storageCode
+						"storageCode":storageCode
 						};
 
 				$.ajax({

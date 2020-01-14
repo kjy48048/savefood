@@ -90,20 +90,21 @@
 			d.food_expi_date_room,
 			DATEDIFF(a.savefood_expi_date, NOW()) AS savefood_remain_day		
 		FROM						
-			savefood a
-		LEFT JOIN saveplace b ON a.saveplace_seq = b.saveplace_seq
+			saveplace b
+		LEFT JOIN (SELECT * FROM savefood WHERE is_delete = 'N') a ON a.saveplace_seq = b.saveplace_seq
 		LEFT JOIN food d ON a.food_seq = d.food_seq
 		LEFT JOIN fridge c ON b.fridge_seq = c.fridge_seq
 		WHERE
 			]]>
-			a.saveplace_seq IN(
+			b.saveplace_seq IN(
 			<foreach collection="saveplace" item="item" separator="," index="index">
 			#{item.saveplace_seq}
 			</foreach>
 			)
-			AND a.is_delete = 'N'
+			AND b.is_delete = 'N'
+			AND c.is_delete = 'N'
 		) e
-		ORDER BY e.fridge_seq, e.saveplace_seq, savefood_remain_day;
+		ORDER BY e.fridge_seq, e.saveplace_seq, savefood_risk, savefood_remain_day;
 		
 	</select>
 	
