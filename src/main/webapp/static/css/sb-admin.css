@@ -4417,7 +4417,9 @@ input[type="button"].btn-block {
 }
 
 .navbar {
-  position: relative;
+  position: fixed;
+  width: 100%;
+  z-index: 99;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4430,6 +4432,12 @@ input[type="button"].btn-block {
   -ms-flex-pack: justify;
   justify-content: space-between;
   padding: 0.5rem 1rem;
+}
+
+@media (min-width : 768px) {
+	.navbar {
+		position: relative;
+	}
 }
 
 .navbar > .container,
@@ -10590,6 +10598,14 @@ body {
   width: 100%;
   padding-top: 1rem;
   padding-bottom: 80px;
+  margin-top: 56px;
+  height: fit-content;
+}
+
+@media (min-width:768px){
+	#wrapper #content-wrapper{
+		margin-top: 0px;
+	}
 }
 
 .scroll-to-top {
@@ -10682,8 +10698,9 @@ body {
   width: 90px !important;
   background-color: #212529;
   min-height: calc(100vh - 56px);
-  position:absolute;
-  z-index: 99;
+  position: fixed;
+  top: 56px;
+  z-index: 98;
 }
 
 .sidebar .nav-item:last-child {
@@ -10735,6 +10752,7 @@ body {
   .sidebar {
     width: 225px !important;
     position:relative;
+    top: 0;
   }
   .sidebar .nav-item .nav-link {
     display: block;

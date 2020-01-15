@@ -1,5 +1,7 @@
 package com.ward.savefood.food.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ward.savefood.common.controller.GeneralController;
+import com.ward.savefood.food.model.DeleteUserFoodRequest;
 import com.ward.savefood.food.model.InsertUserFoodRequest;
 import com.ward.savefood.food.model.SelectFoodRequest;
 import com.ward.savefood.food.model.SelectSavefoodRequest;
@@ -118,6 +121,36 @@ public class UserFoodRestController extends GeneralController {
 		foodRequest.setMemberSeq(memberSeq);
 
 		return foodService.updateSavefood(foodRequest);
+	}
+	
+	@PostMapping("/savefood/delete")
+	public ResponseEntity<?> deleteSavefood(@Valid @RequestBody DeleteUserFoodRequest foodRequest, BindingResult bindingResult, HttpSession session) {
+		logger.info("userFoodRestController deleteSavefoodBach : "+ foodRequest.toString());
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		String memberSeq = fridgeService.getMemberSeq((String)session.getAttribute("loginInfo"));
+		foodRequest.setMemberSeq(memberSeq);
+
+		return foodService.deleteSavefood(foodRequest);
+	}
+	
+	@PostMapping("/savefood/batchDelete")
+	public ResponseEntity<?> deleteSavefoodBatch(@Valid @RequestBody List<DeleteUserFoodRequest> foodRequest, BindingResult bindingResult, HttpSession session) {
+		logger.info("userFoodRestController deleteSavefoodBach : "+ foodRequest.toString());
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		for(int i = 0; i < foodRequest.size(); i++) {
+			String memberSeq = fridgeService.getMemberSeq((String)session.getAttribute("loginInfo"));
+			foodRequest.get(i).setMemberSeq(memberSeq);
+		}
+
+		return foodService.deleteSavefoodBatch(foodRequest);
 	}
 	
 	@PostMapping("/savefood/expidate")

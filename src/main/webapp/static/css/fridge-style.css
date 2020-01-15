@@ -1,15 +1,14 @@
 @charset "UTF-8";
-#content-wrapper {
-	padding-bottom: 40px;
-}
 
 .saveplace-container{
 	flex-grow: 1;
 	margin-left: 8px;
+	margin-bottom: 20px;
 	display:block;
 	min-width: 300px;
 	width: 30%;
 	min-height: 200px;
+	height: fit-content;
 }
 
 .container-fluid {
@@ -51,6 +50,10 @@
 	vertical-align: middle;
 	text-overflow: clip;
 	font-size: 10px;
+}
+
+.delete-mode {
+	opacity: 40%;
 }
 
 .modal-label {

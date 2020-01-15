@@ -24,7 +24,14 @@
 		  AND member_seq = #{memberSeq}; 
 	</update>
 	
-	<update id="deleteUserFood" parameterType="java.util.HashMap">
+	<update id="deleteSavefood" parameterType="java.util.HashMap">
+		UPDATE
+			savefood
+		SET
+			is_delete = 'Y',
+			modify_date = now()
+		WHERE savefood_seq = #{savefoodSeq}
+		  AND member_seq = #{memberSeq}; 
 	</update>
 	
 	<select id="searchFoodList" parameterType="String" resultType="java.util.HashMap">

@@ -140,8 +140,10 @@
 			
 			
 			<div class="row">
-				<div class="col" >
-					<button type="button" class="btn btn-primary btn-toggle" onclick="showModal()" style="margin:10px 10px  10px  10px;" >+</button>
+				<div class="col" style="align-items: flex-end; justify-content:flex-end; display: flex;">
+					<button id="cancel-delete-btn" type="button" class="btn btn-secondary btn-toggle btn-hidden" onclick="changeDeleteMode(true)" style=" margin:10px 10px  10px  10px;">취소</button>
+					<button id="batch-delete-btn" type="button" class="btn btn-primary btn-toggle" onclick="changeDeleteMode(false)" style=" margin:10px 10px  10px  10px;">선택삭제</button>
+					<button type="button" class="btn btn-primary btn-toggle" onclick="showModal()" style=" margin:10px 10px  10px  10px;" >+</button>
 					<!-- <button type="button" class="btn btn-primary btn-toggle" data-toggle="modal" data-target="#saveplaceModal" style="margin:10px 10px  10px  10px;" >+</button>  -->
 				</div>
 			</div>
@@ -321,6 +323,90 @@
 		    });
 		}
 		
+		function savefoodDelete(){
+			var savefoodSeq = $("#savefoodModal").get(0).dataset.savefoodSeq;
+
+			if(!savefoodSeq){
+				alert("잘못된 접근입니다.");
+			}
+
+			var dataParam = {
+					"savefoodSeq":savefoodSeq
+			}
+
+			if(confirm("삭제하시겠습니까?")){
+				 $.ajax({
+					url:'/api/food/savefood/delete',
+					type:'post',
+					dataType:'text',
+					contentType:'application/json',
+					data:JSON.stringify(dataParam),
+					success:function(data){
+						alert("삭제되었습니다.");
+						location.reload();
+					},error:function(data){
+						alert(data.responseText);
+					}
+				}); 
+			}else{
+				return;
+			}	
+		}
+		
+		function changeDeleteMode(isCancel){
+			if(!isCancel){
+				if($('#batch-delete-btn').is('.is-delete-mode')){
+
+					var checkedSaveFood = $('.delete-savefood:checked');
+
+					if(checkedSaveFood.length == 0){
+						alert("선택된 식품이 없습니다.");
+						return;
+					}
+
+					var dataParam = new Array();
+
+					for(var i = 0; i < checkedSaveFood.length; i++){
+						var savefoodSeq = {'savefoodSeq':checkedSaveFood.get(i).value};
+						dataParam.push(savefoodSeq);
+					}
+
+					if(confirm("삭제하시겠습니까?")){
+						 $.ajax({
+							url:'/api/food/savefood/batchDelete',
+							type:'post',
+							dataType:'text',
+							contentType:'application/json',
+							data:JSON.stringify(dataParam),
+							success:function(data){
+								alert("삭제되었습니다.");
+								location.reload();
+							},error:function(data){
+								alert(data.responseText);
+							}
+						}); 
+					}else{
+						return;
+					}	
+				}
+				else{
+					$(".food").addClass('delete-mode');
+					$("#cancel-delete-btn").removeClass('btn-hidden');
+					$("#batch-delete-btn").addClass('is-delete-mode');
+					$("#batch-delete-btn").text('삭제');
+					$(".delete-savefood").removeAttr('disabled');	
+				}
+			}
+			else if(isCancel){
+				$(".food").removeClass('delete-mode');
+				$("#cancel-delete-btn").addClass('btn-hidden');
+				$("#batch-delete-btn").removeClass('is-delete-mode');
+				$("#batch-delete-btn").text('선택삭제');
+				$(".delete-savefood").removeAttr('checked');
+				$(".delete-savefood").attr('disabled', 'true');
+			}
+		}
+		
 		// 보관장소 등록 팝업
 	 	function showModal() {
 			$("#saveplaceModal").modal();
@@ -387,6 +473,17 @@
 
 		$(".food").on("click", function(e){
 			var target = $(e.target).is(".food") ? $(e.target) : $(e.target).closest(".food");
+
+			if($('#batch-delete-btn').is('.is-delete-mode')){
+				if(target.children('.delete-savefood').is(':checked')){
+					target.removeClass('delete-mode');
+				}
+				else{
+					target.addClass('delete-mode');
+				}
+				return;
+			}
+			
 			var savefoodSeq = target.children("input[type='checkbox']").val();
 			$("#savefoodModal").get(0).dataset.savefoodSeq = savefoodSeq;
 			savefoodModalInit(savefoodSeq);

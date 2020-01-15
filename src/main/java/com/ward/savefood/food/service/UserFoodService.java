@@ -29,6 +29,7 @@ import com.ward.savefood.admin.model.InsertFoodRequest;
 import com.ward.savefood.admin.model.UpdateCategoryRequest;
 import com.ward.savefood.admin.model.UpdateFoodRequest;
 import com.ward.savefood.food.dao.UserFoodDao;
+import com.ward.savefood.food.model.DeleteUserFoodRequest;
 import com.ward.savefood.food.model.InsertUserFoodRequest;
 import com.ward.savefood.food.model.SelectFoodRequest;
 import com.ward.savefood.food.model.SelectSavefoodRequest;
@@ -192,6 +193,72 @@ public class UserFoodService {
 		
 		transactionManager.rollback(status);
 		return new ResponseEntity<>("fail to update user food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+
+	public ResponseEntity<?> deleteSavefood(DeleteUserFoodRequest request) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			
+			int savefoodSeq = request.getSavefoodSeq();
+			String memberSeq = request.getMemberSeq();
+			
+			if(StringUtils.isEmpty(memberSeq)|| savefoodSeq == 0) {
+				return new ResponseEntity<>("input food delete info", HttpStatus.NO_CONTENT);
+			}
+		
+			Map<String, Object> deleteUserFood = new HashMap<String, Object>();
+		
+			deleteUserFood.put("savefoodSeq", savefoodSeq);
+			deleteUserFood.put("memberSeq", memberSeq);
+		
+			int updateResult = foodDao.deleteSavefood(deleteUserFood);
+		
+			if(updateResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>("delete complete", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to delete user food", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<?> deleteSavefoodBatch(List<DeleteUserFoodRequest> request) {
+		TransactionStatus status = transactionManager.getTransaction(def);
+		
+		try {
+			int updateResult = 0;
+			
+			for(DeleteUserFoodRequest savefood : request) {
+				int savefoodSeq = savefood.getSavefoodSeq();
+				String memberSeq = savefood.getMemberSeq();
+				
+				if(StringUtils.isEmpty(memberSeq)|| savefoodSeq == 0) {
+					return new ResponseEntity<>("input food delete info", HttpStatus.NO_CONTENT);
+				}
+			
+				Map<String, Object> deleteUserFood = new HashMap<String, Object>();
+			
+				deleteUserFood.put("savefoodSeq", savefoodSeq);
+				deleteUserFood.put("memberSeq", memberSeq);
+			
+				updateResult += foodDao.deleteSavefood(deleteUserFood);
+			}
+			
+			if(updateResult > 0) {
+				transactionManager.commit(status);
+				return new ResponseEntity<>("delete complete", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		transactionManager.rollback(status);
+		return new ResponseEntity<>("fail to delete user food", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public ResponseEntity<?> getSavefood(SelectSavefoodRequest foodRequest){
